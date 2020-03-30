@@ -1,0 +1,27 @@
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
+# maven ignore
+target/
+*.war
+
+# temp ignore
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+
+# system ignore
+/.idea/
+/sdklog/
+/logTest/
+/logs/
+/out/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

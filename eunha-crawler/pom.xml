@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>eunha</artifactId>
+        <groupId>io.github.wrobezin</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>eunha-crawler</artifactId>
+
+    <properties>
+        <eunha-version>0.0.1-SNAPSHOT</eunha-version>
+        <jsoup.version>1.12.1</jsoup.version>
+        <jsoup-xpath.version>2.3.2</jsoup-xpath.version>
+        <okhttp.version>4.3.1</okhttp.version>
+    </properties>
+
+    <dependencies>
+        <!-- eunha -->
+        <dependency>
+            <groupId>io.github.wrobezin</groupId>
+            <artifactId>eunha-data</artifactId>
+            <version>${eunha-version}</version>
+        </dependency>
+
+        <!-- JSoup -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
+        </dependency>
+
+        <!-- JSoupXPath -->
+        <dependency>
+            <groupId>cn.wanghaomiao</groupId>
+            <artifactId>JsoupXpath</artifactId>
+            <version>${jsoup-xpath.version}</version>
+        </dependency>
+
+        <!-- OkHttp -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
