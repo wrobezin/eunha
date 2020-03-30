@@ -85,6 +85,10 @@ public final class HttpUrlUtils {
                 }).orElse(UrlInfo.BLANK);
     }
 
+    public static boolean hasSameHost(String url1, String url2) {
+        return parseUrl(url1).getHost().equals(parseUrl(url2).getHost());
+    }
+
     public static void main(String[] args) {
         Arrays.asList(
                 "http://t.test.com:80/a-b/123",

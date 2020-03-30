@@ -1,6 +1,6 @@
 package io.github.wrobezin.eunha.entity.document;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -12,7 +12,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  * @date 2020/3/28 19:45
  */
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
 public class HyperLink {
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
@@ -20,4 +20,9 @@ public class HyperLink {
 
     @Field(type = FieldType.Keyword)
     private String url;
+
+    public HyperLink(String url) {
+        this.url = url;
+        this.anchorText = "";
+    }
 }

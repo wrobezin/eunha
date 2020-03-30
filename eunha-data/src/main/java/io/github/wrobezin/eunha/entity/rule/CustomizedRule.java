@@ -18,7 +18,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CustomizedRule {
     private String id;
+    /** 规则名 */
+    private String name;
+    /** 抓取规则 */
     private CrawlRule crawlRule;
+    /** 兴趣规则 */
     private InterestRule interestRule;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

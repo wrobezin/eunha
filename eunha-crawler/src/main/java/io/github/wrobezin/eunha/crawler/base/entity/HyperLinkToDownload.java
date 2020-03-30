@@ -1,24 +1,21 @@
 package io.github.wrobezin.eunha.crawler.base.entity;
 
-import io.github.wrobezin.framework.utils.http.UrlInfo;
+import io.github.wrobezin.eunha.entity.document.HyperLink;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import okhttp3.Response;
 
 /**
- * 下载结果
+ * 待下载超链接
  *
  * @author yuan
  * @version 1.0
- * @date 2020/3/30 14:54
+ * @date 2020/3/30 16:19
  */
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DownloadResult {
-    UrlInfo urlInfo;
-    Response response;
+public class HyperLinkToDownload {
+    Integer depth;
+    HyperLink link;
 }
