@@ -10,8 +10,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.util.Optional;
-
 /**
  * @author yuan
  * @version 1.0
@@ -35,13 +33,13 @@ public class OriginalDocument {
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String body;
 
-    public String generateFingerPrint() {
-        return DigestUtils.sha256Hex(Optional.ofNullable(body).orElse(""));
+    public static String getFingerPrint(String content) {
+        return DigestUtils.sha256Hex(content);
     }
 
     public static final OriginalDocument BLANK = OriginalDocument.builder()
             .url("")
             .body("")
-            .fingerPrint(DigestUtils.sha256Hex(""))
+            .fingerPrint(getFingerPrint(""))
             .build();
 }

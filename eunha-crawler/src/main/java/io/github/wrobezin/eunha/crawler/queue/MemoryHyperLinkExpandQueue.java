@@ -1,6 +1,6 @@
-package io.github.wrobezin.eunha.crawler.base.queue;
+package io.github.wrobezin.eunha.crawler.queue;
 
-import io.github.wrobezin.eunha.crawler.base.entity.HyperLinkToDownload;
+import io.github.wrobezin.eunha.crawler.entity.HyperLinkToDownload;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 
 import javax.validation.constraints.NotNull;
@@ -17,6 +17,7 @@ import java.util.Set;
  * @date 2020/3/30 16:50
  */
 public class MemoryHyperLinkExpandQueue implements HyperLinkExpandQueue {
+    //    public class MemoryHyperLinkExpandQueue implements HyperLinkExpandQueue {
     private static final String URL_SEPARATION_TOKEN = "/";
 
     private PriorityQueue<HyperLinkToDownload> queue;

@@ -1,6 +1,6 @@
-package io.github.wrobezin.eunha.crawler.base;
+package io.github.wrobezin.eunha.crawler;
 
-import io.github.wrobezin.eunha.crawler.base.entity.CrawlResult;
+import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
 import io.github.wrobezin.eunha.entity.rule.CustomizedRule;
 
 import java.util.List;

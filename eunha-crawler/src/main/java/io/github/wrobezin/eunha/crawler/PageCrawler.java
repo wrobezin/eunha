@@ -1,10 +1,12 @@
-package io.github.wrobezin.eunha.crawler.base;
+package io.github.wrobezin.eunha.crawler;
 
-import io.github.wrobezin.eunha.crawler.base.entity.CrawlResult;
-import io.github.wrobezin.eunha.crawler.base.entity.DownloadResult;
-import io.github.wrobezin.eunha.crawler.base.entity.HyperLinkToDownload;
-import io.github.wrobezin.eunha.crawler.base.entity.ParseResult;
-import io.github.wrobezin.eunha.crawler.base.queue.HyperLinkExpandQueue;
+import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
+import io.github.wrobezin.eunha.crawler.entity.DownloadResult;
+import io.github.wrobezin.eunha.crawler.entity.HyperLinkToDownload;
+import io.github.wrobezin.eunha.crawler.entity.ParseResult;
+import io.github.wrobezin.eunha.crawler.parser.ParserRouter;
+import io.github.wrobezin.eunha.crawler.queue.HyperLinkExpandQueue;
+import io.github.wrobezin.eunha.crawler.queue.MemoryHyperLinkExpandQueue;
 import io.github.wrobezin.eunha.entity.document.HyperLink;
 import io.github.wrobezin.eunha.entity.rule.CrawlRule;
 import io.github.wrobezin.eunha.entity.rule.CustomizedRule;
@@ -12,6 +14,7 @@ import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,29 +23,23 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 抽象爬虫类
+ * 网页爬虫类，抓取HTML内容
  *
- * @param <T> 解析结果类型
  * @author yuan
  * @version 1.0
  * @date 2020/3/30 15:49
  */
 @Slf4j
-public abstract class AbstractPageCrawler<T> implements Crawler {
+@Component
+public class PageCrawler implements Crawler {
     // ----------------------------------------工作逻辑相关----------------------------------------
+    private HyperLinkExpandQueue queue = new MemoryHyperLinkExpandQueue();
 
-    private HyperLinkExpandQueue queue;
+    private final ParserRouter parserRouter;
 
-    protected AbstractPageCrawler(HyperLinkExpandQueue queue) {
-        this.queue = queue;
+    public PageCrawler(ParserRouter parserRouter) {
+        this.parserRouter = parserRouter;
     }
-
-    /**
-     * 获取爬虫名
-     *
-     * @return 爬虫名
-     */
-    protected abstract String crawlerName();
 
     @Override
     public List<CrawlResult> crawl(CustomizedRule customizedRule) {
@@ -59,8 +56,8 @@ public abstract class AbstractPageCrawler<T> implements Crawler {
             try {
                 // 下载页面
                 DownloadResult downloadResult = downloadPage(link.getLink());
-                // 解析页面
-                ParseResult<T> parseResult = parse(downloadResult);
+                // 调用解析器解析页面
+                ParseResult parseResult = parserRouter.parse(downloadResult);
                 // 处理解析结果并将最终爬取结果添加到爬取结果列表
                 crawlResults.add(handleParseResult(parseResult));
                 // URL扩展
@@ -71,25 +68,17 @@ public abstract class AbstractPageCrawler<T> implements Crawler {
                             .forEach(queue::offer);
                 }
             } catch (IOException e) {
-                log.error("{}下载{}出错：{}", crawlerName(), link, e);
+                log.error("下载{}出错：{}", link, e);
             }
         }
         return crawlResults;
     }
 
-    protected DownloadResult downloadPage(HyperLink link) throws IOException {
+    private DownloadResult downloadPage(HyperLink link) throws IOException {
         UrlInfo urlInfo = HttpUrlUtils.parseUrl(link.getUrl());
         Response response = get(link.getUrl());
         return new DownloadResult(urlInfo, response);
     }
-
-    /**
-     * 对下载结果进行解析
-     *
-     * @param downloadResult 下载结果
-     * @return 解析结果
-     */
-    protected abstract ParseResult<T> parse(DownloadResult downloadResult);
 
     /**
      * 处理解析结果
@@ -97,7 +86,11 @@ public abstract class AbstractPageCrawler<T> implements Crawler {
      * @param parseResult 解析结果
      * @return 最终爬取结果
      */
-    protected abstract CrawlResult handleParseResult(ParseResult<T> parseResult);
+    private CrawlResult handleParseResult(ParseResult parseResult) {
+        // TODO 持久化
+        log.info(parseResult.getContent().toString());
+        return null;
+    }
 
     // ------------------------------------------网络相关------------------------------------------
 

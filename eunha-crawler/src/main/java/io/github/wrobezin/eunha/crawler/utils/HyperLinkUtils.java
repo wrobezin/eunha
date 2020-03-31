@@ -1,4 +1,4 @@
-package io.github.wrobezin.eunha.crawler.base.utils;
+package io.github.wrobezin.eunha.crawler.utils;
 
 import io.github.wrobezin.eunha.entity.document.HyperLink;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;

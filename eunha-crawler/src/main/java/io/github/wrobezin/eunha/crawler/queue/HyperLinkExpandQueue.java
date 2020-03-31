@@ -1,7 +1,7 @@
-package io.github.wrobezin.eunha.crawler.base.queue;
+package io.github.wrobezin.eunha.crawler.queue;
 
 
-import io.github.wrobezin.eunha.crawler.base.entity.HyperLinkToDownload;
+import io.github.wrobezin.eunha.crawler.entity.HyperLinkToDownload;
 
 /**
  * 超链接扩展队列

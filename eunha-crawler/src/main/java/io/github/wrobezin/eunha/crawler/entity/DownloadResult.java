@@ -1,4 +1,4 @@
-package io.github.wrobezin.eunha.crawler.base.entity;
+package io.github.wrobezin.eunha.crawler.entity;
 
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import lombok.AllArgsConstructor;

@@ -17,7 +17,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -57,10 +56,6 @@ public class Page {
 
     @Field(type = FieldType.Keyword)
     private String fingerPrint;
-
-    public String generateId() {
-        return DigestUtils.sha256Hex(Optional.ofNullable(getUrl()).orElse(""));
-    }
 
     public String generateFingerPrint(String contentFingerPrint) {
         String linksFingerPrint = hyperLinks.stream()
