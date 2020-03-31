@@ -1,7 +1,7 @@
 package io.github.wrobezin.eunha.crawler.base.entity;
 
 import io.github.wrobezin.eunha.entity.document.HyperLink;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,8 +16,8 @@ import java.util.List;
  * @date 2020/3/30 14:56
  */
 @Data
-@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ParseResult<T> {
     String url;
     List<HyperLink> links;
