@@ -1,5 +1,6 @@
 package io.github.wrobezin.eunha.entity.rule;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class CustomizedRule {
     private String id;
     /** 规则名 */

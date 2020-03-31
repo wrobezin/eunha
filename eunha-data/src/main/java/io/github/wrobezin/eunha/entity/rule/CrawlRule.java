@@ -1,5 +1,6 @@
 package io.github.wrobezin.eunha.entity.rule;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class CrawlRule {
     /** 种子URL */
     private String seedUrl;

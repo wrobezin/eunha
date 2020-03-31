@@ -16,6 +16,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class SingleInterestRuleItem extends AbstractInterestRuleItem {
     private RuleItemJudgeTypeEnum judgeType;
+    // TODO 换成List或Map以支持更复杂的兴趣规则
     private String value;
 
     private SingleInterestRuleItem(RuleItemLogicTypeEnum logicType, RuleItemJudgeTypeEnum judgeType, String value) {

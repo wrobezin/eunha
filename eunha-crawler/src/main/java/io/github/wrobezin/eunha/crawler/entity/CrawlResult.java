@@ -1,6 +1,7 @@
 package io.github.wrobezin.eunha.crawler.entity;
 
 import io.github.wrobezin.eunha.enums.PageContentTypeEnum;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class CrawlResult {
     private String searchEnginePageId;
     private String databasePageId;

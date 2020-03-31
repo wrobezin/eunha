@@ -17,7 +17,6 @@ import java.util.Set;
  * @date 2020/3/30 16:50
  */
 public class MemoryHyperLinkExpandQueue implements HyperLinkExpandQueue {
-    //    public class MemoryHyperLinkExpandQueue implements HyperLinkExpandQueue {
     private static final String URL_SEPARATION_TOKEN = "/";
 
     private PriorityQueue<HyperLinkToDownload> queue;

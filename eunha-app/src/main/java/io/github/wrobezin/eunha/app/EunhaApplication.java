@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @version 1.0
  * @date 2020/3/28 19:05
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "io.github.wrobezin.eunha")
 public class EunhaApplication {
 
     public static void main(String[] args) {
