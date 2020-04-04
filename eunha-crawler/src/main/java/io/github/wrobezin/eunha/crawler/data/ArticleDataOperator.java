@@ -23,12 +23,12 @@ public class ArticleDataOperator implements ContentDataOperator {
     }
 
     @Override
-    public String saveMongo(ParseResult parseResult) {
+    public String saveMongo(Object content) {
         return null;
     }
 
     @Override
-    public String saveElasticsearch(ParseResult parseResult) {
+    public String saveElasticsearch(Object content) {
         return null;
     }
 }

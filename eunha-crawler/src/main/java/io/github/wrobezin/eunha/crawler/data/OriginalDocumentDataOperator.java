@@ -1,10 +1,10 @@
 package io.github.wrobezin.eunha.crawler.data;
 
 import io.github.wrobezin.eunha.crawler.anotation.DataOperatorFor;
-import io.github.wrobezin.eunha.crawler.entity.ParseResult;
 import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.OriginalDocumentElasticsearchRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.OriginalDocumentMongoRepository;
+import io.github.wrobezin.eunha.data.utils.EntityHashUtils;
 
 /**
  * @author yuan
@@ -22,13 +22,19 @@ public class OriginalDocumentDataOperator implements ContentDataOperator {
         this.esRepository = esRepository;
     }
 
+    public OriginalDocument getNewest(String url){
+        return mongoRepository.findFirstByUrlOrderByVersionDesc(url);
+    }
+
     @Override
-    public String saveMongo(ParseResult parseResult) {
+    public String saveMongo(Object content) {
+        OriginalDocument document = (OriginalDocument) content;
+        String fingerPrint = EntityHashUtils.generateOriginalFingerPrint(document);
         return null;
     }
 
     @Override
-    public String saveElasticsearch(ParseResult parseResult) {
+    public String saveElasticsearch(Object content) {
         return null;
     }
 }

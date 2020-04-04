@@ -34,7 +34,6 @@ public abstract class AbstractParser {
         Document document = Jsoup.parse(getPayload(downloadResult.getResponse()));
         List<HyperLink> hyperLinks = HyperLinkUtils.getAllLinks(document);
         UrlInfo urlInfo = downloadResult.getUrlInfo();
-        parseResult.setUrl(urlInfo.getUrl());
         parseResult.setContent(parseContent(urlInfo, document));
         parseResult.setContentType(getContentType());
         parseResult.setLinks(hyperLinks);

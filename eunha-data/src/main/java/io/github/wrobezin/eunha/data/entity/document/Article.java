@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.github.wrobezin.eunha.data.enums.ArticleCatrgoryEnum;
+import io.github.wrobezin.eunha.data.utils.EntityHashUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -20,8 +20,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author yuan
@@ -62,18 +60,18 @@ public class Article {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime publishTime;
 
+    @Field(type = FieldType.Date)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime updateTime;
+
+    private Integer version;
+
     public boolean isNotBlank() {
         return Optional.of(getCategories())
                 .map(categories -> categories.size() != 1 || !categories.get(0).equals(ArticleCatrgoryEnum.BLANK.getCode()))
                 .orElse(false);
-    }
-
-    public String generateFingerPrint() {
-        String infoFingerPrints = Stream.of(getTitle(), getAuthor(), getPublishTime(), getBody())
-                .map(obj -> Optional.ofNullable(obj).map(Object::toString).orElse(""))
-                .map(DigestUtils::md5Hex)
-                .collect(Collectors.joining());
-        return DigestUtils.sha256Hex(infoFingerPrints);
     }
 
     public static final Article BLANK = Article.builder()
@@ -82,6 +80,7 @@ public class Article {
             .categories(Collections.singletonList(ArticleCatrgoryEnum.BLANK.getCode()))
             .body("")
             .url("")
-            .fingerPrint(new Article().generateFingerPrint())
+            .fingerPrint(EntityHashUtils.generateArticleFingerPrint(new Article()))
+            .version(0)
             .build();
 }

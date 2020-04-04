@@ -9,4 +9,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @date 2020/4/4 16:57
  */
 public interface OriginalDocumentMongoRepository extends MongoRepository<OriginalDocument, String> {
+    /**
+     * 根据URL获取版本号最大的原始文档
+     *
+     * @param url url
+     * @return 对应URL的最新版原始文档
+     */
+    OriginalDocument findFirstByUrlOrderByVersionDesc(String url);
 }

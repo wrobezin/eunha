@@ -4,7 +4,6 @@ import io.github.wrobezin.eunha.crawler.anotation.DataOperatorFor;
 import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchRepository;
-import io.github.wrobezin.eunha.data.repository.mongo.PageMongoRepository;
 import io.github.wrobezin.framework.utils.spring.BeanHelper;
 import io.github.wrobezin.framework.utils.spring.PackageScanUtils;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -25,15 +24,12 @@ public class DataOpertorWraper {
 
     private Map<Class<?>, ContentDataOperator> contentDataOperatorMap;
 
-    private final PageMongoRepository pageMongoRepository;
-
-    private final PageElasticsearchRepository pageEsRepository;
+    private final PageElasticsearchRepository pageRepository;
 
     private final BeanHelper beanHelper;
 
-    public DataOpertorWraper(PageMongoRepository pageMongoRepository, PageElasticsearchRepository pageEsRepository, BeanHelper beanHelper) {
-        this.pageMongoRepository = pageMongoRepository;
-        this.pageEsRepository = pageEsRepository;
+    public DataOpertorWraper(PageElasticsearchRepository pageRepository, BeanHelper beanHelper) {
+        this.pageRepository = pageRepository;
         this.beanHelper = beanHelper;
         this.contentDataOperatorMap = new HashMap<>(4);
         PackageScanUtils.classScan(PACKAGE_PATH)

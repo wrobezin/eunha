@@ -1,7 +1,5 @@
 package io.github.wrobezin.eunha.crawler.data;
 
-import io.github.wrobezin.eunha.crawler.entity.ParseResult;
-
 /**
  * @author yuan
  * @version 1.0
@@ -10,15 +8,15 @@ import io.github.wrobezin.eunha.crawler.entity.ParseResult;
 public interface ContentDataOperator {
     /**
      * 保存到MongoDB
-     * @param parseResult 解析结果
+     * @param content 页面内容
      * @return id
      */
-    String saveMongo(ParseResult parseResult);
+    String saveMongo(Object content);
 
     /**
      * 保存到ES
-     * @param parseResult 解析结果
+     * @param content 页面内容
      * @return id
      */
-    String saveElasticsearch(ParseResult parseResult);
+    String saveElasticsearch(Object content);
 }

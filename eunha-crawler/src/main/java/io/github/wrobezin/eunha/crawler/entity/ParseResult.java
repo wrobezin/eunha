@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParseResult {
-    String url;
     List<HyperLink> links;
     Object content;
     Class<?> contentType;
