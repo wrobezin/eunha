@@ -4,6 +4,8 @@ import io.github.wrobezin.eunha.enums.RuleItemJudgeTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,7 +24,7 @@ import static io.github.wrobezin.eunha.enums.RuleItemLogicTypeEnum.*;
 public class InterestRule {
     private List<InterestRuleItemGroup> interestRules;
 
-    public static InterestRuleItemGroup group(AbstractInterestRuleItem... ruleItems) {
+    public static InterestRuleItemGroup group(List<? extends AbstractInterestRuleItem> ruleItems) {
         return new InterestRuleItemGroup(ruleItems);
     }
 
@@ -34,7 +36,7 @@ public class InterestRule {
     }
 
     public static InterestRule first(RuleItemJudgeTypeEnum judgeType, String value) {
-        return first(new InterestRuleItemGroup(SingleInterestRuleItem.first(judgeType, value)));
+        return first(new InterestRuleItemGroup(Collections.singletonList(SingleInterestRuleItem.first(judgeType, value))));
     }
 
     public InterestRule and(InterestRuleItemGroup group) {
@@ -44,7 +46,7 @@ public class InterestRule {
     }
 
     public InterestRule and(RuleItemJudgeTypeEnum judgeType, String value) {
-        return and(new InterestRuleItemGroup(SingleInterestRuleItem.first(judgeType, value)));
+        return and(new InterestRuleItemGroup(Collections.singletonList(SingleInterestRuleItem.first(judgeType, value))));
     }
 
     public InterestRule or(InterestRuleItemGroup group) {
@@ -54,7 +56,7 @@ public class InterestRule {
     }
 
     public InterestRule or(RuleItemJudgeTypeEnum judgeType, String value) {
-        return or(new InterestRuleItemGroup(SingleInterestRuleItem.first(judgeType, value)));
+        return or(new InterestRuleItemGroup(Collections.singletonList(SingleInterestRuleItem.first(judgeType, value))));
     }
 
     public InterestRule andNot(InterestRuleItemGroup group) {
@@ -64,7 +66,7 @@ public class InterestRule {
     }
 
     public InterestRule andNot(RuleItemJudgeTypeEnum judgeType, String value) {
-        return andNot(new InterestRuleItemGroup(SingleInterestRuleItem.first(judgeType, value)));
+        return andNot(new InterestRuleItemGroup(Collections.singletonList(SingleInterestRuleItem.first(judgeType, value))));
     }
 
     public InterestRule orNot(InterestRuleItemGroup group) {
@@ -74,7 +76,7 @@ public class InterestRule {
     }
 
     public InterestRule orNot(RuleItemJudgeTypeEnum judgeType, String value) {
-        return orNot(new InterestRuleItemGroup(SingleInterestRuleItem.first(judgeType, value)));
+        return orNot(new InterestRuleItemGroup(Collections.singletonList(SingleInterestRuleItem.first(judgeType, value))));
     }
 
     public static void main(String[] args) {
@@ -83,13 +85,13 @@ public class InterestRule {
         System.out.println("---------------------------------------");
 
         InterestRule rule2 = InterestRule.first(TITLE_CONTAIN, "武汉")
-                .and(group(
+                .and(group(Arrays.asList(
                         SingleInterestRuleItem.first(TITLE_CONTAIN, "新冠肺炎"),
                         SingleInterestRuleItem.or(TITLE_CONTAIN, "新冠病毒"),
                         SingleInterestRuleItem.or(TITLE_CONTAIN, "新冠肺炎病毒"),
                         SingleInterestRuleItem.or(TITLE_CONTAIN, "新型冠状肺炎"),
                         SingleInterestRuleItem.or(TITLE_CONTAIN, "新型冠状肺炎病毒"),
-                        SingleInterestRuleItem.or(TITLE_CONTAIN, "新型冠状病毒")));
+                        SingleInterestRuleItem.or(TITLE_CONTAIN, "新型冠状病毒"))));
         System.out.println(rule2);
         System.out.println("---------------------------------------");
     }

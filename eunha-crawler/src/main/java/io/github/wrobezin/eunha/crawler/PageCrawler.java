@@ -37,6 +37,8 @@ public class PageCrawler implements Crawler {
 
     private final ParserRouter parserRouter;
 
+    private final Integer SLEEP_TIME = 1000;
+
     public PageCrawler(ParserRouter parserRouter) {
         this.parserRouter = parserRouter;
     }
@@ -45,17 +47,18 @@ public class PageCrawler implements Crawler {
     public List<CrawlResult> crawl(CustomizedRule customizedRule) {
         CrawlRule crawlRule = customizedRule.getCrawlRule();
         // 将种子URL加入队列
-        queue.offer(new HyperLinkToDownload(0, new HyperLink(crawlRule.getSeedUrl())));
+        queue.offer(new HyperLinkToDownload(crawlRule.getSeedUrl()));
         List<CrawlResult> crawlResults = new ArrayList<>();
         while (!queue.isEmpty()) {
-            HyperLinkToDownload link = queue.poll();
-            Integer depth = link.getDepth();
+            HyperLinkToDownload linkToDownload = queue.poll();
+            Integer depth = linkToDownload.getDepth();
             if (depth > crawlRule.getMaxExpandDepth()) {
                 continue;
             }
             try {
+                log.info("下载链接：{} {}", linkToDownload.getLink().getAnchorText(), linkToDownload.getLink().getUrl());
                 // 下载页面
-                DownloadResult downloadResult = downloadPage(link.getLink());
+                DownloadResult downloadResult = downloadPage(linkToDownload.getLink());
                 // 调用解析器解析页面
                 ParseResult parseResult = parserRouter.parse(downloadResult);
                 // 处理解析结果并将最终爬取结果添加到爬取结果列表
@@ -63,12 +66,13 @@ public class PageCrawler implements Crawler {
                 // URL扩展
                 if (crawlRule.getExpandable()) {
                     parseResult.getLinks().stream()
-                            .filter(url -> crawlRule.getExpandToOtherSite() || HttpUrlUtils.hasSameHost(url.getUrl(), link.getLink().getUrl()))
-                            .map(expandedLink -> new HyperLinkToDownload(depth + 1, expandedLink))
+                            .filter(url -> crawlRule.getExpandToOtherSite() || HttpUrlUtils.hasSameHost(url.getUrl(), linkToDownload.getLink().getUrl()))
+                            .map(expandedLink -> new HyperLinkToDownload(expandedLink, linkToDownload, parseResult, customizedRule.getInterestRule()))
                             .forEach(queue::offer);
                 }
+                sleep();
             } catch (IOException e) {
-                log.error("下载{}出错：{}", link, e);
+                log.error("下载{}出错：{}", linkToDownload, e);
             }
         }
         return crawlResults;
@@ -88,8 +92,16 @@ public class PageCrawler implements Crawler {
      */
     private CrawlResult handleParseResult(ParseResult parseResult) {
         // TODO 持久化
-        log.info(parseResult.getContent().toString());
+//        log.info(parseResult.getContent().toString());
         return null;
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(SLEEP_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     // ------------------------------------------网络相关------------------------------------------

@@ -31,6 +31,9 @@ public class OriginalDocument {
     private String fingerPrint;
 
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    private String title;
+
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String body;
 
     public static String getFingerPrint(String content) {

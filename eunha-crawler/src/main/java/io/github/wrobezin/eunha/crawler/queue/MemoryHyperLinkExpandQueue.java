@@ -28,8 +28,16 @@ public class MemoryHyperLinkExpandQueue implements HyperLinkExpandQueue {
         return HttpUrlUtils.parseUrl(link.getLink().getUrl()).getPath().split(URL_SEPARATION_TOKEN).length;
     }
 
+    /**
+     * 默认按URL的层级深度排列（浅链优先）
+     */
     public MemoryHyperLinkExpandQueue() {
         this.queue = new PriorityQueue<>(Comparator.comparing(MemoryHyperLinkExpandQueue::getPathDepth));
+        this.visited = new HashSet<>(64);
+    }
+
+    public MemoryHyperLinkExpandQueue(Comparator<HyperLinkToDownload> comparator) {
+        this.queue = new PriorityQueue<>(comparator);
         this.visited = new HashSet<>(64);
     }
 

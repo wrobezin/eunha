@@ -30,6 +30,6 @@ public class CrawlRule {
     private Integer maxExpandDepth;
 
     public static final Integer EXPAND_DEPTH_INFINITE = Integer.MAX_VALUE;
-    public static final Integer EXPAND_DEPTH_ZERO = 0;
+    public static final Integer EXPAND_DEPTH_NONE = 0;
     public static final Integer EXPAND_DEPTH_DEFAULT = 100;
 }

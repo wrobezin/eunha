@@ -1,9 +1,8 @@
 package io.github.wrobezin.eunha.crawler.entity;
 
 import io.github.wrobezin.eunha.entity.document.HyperLink;
-import lombok.AllArgsConstructor;
+import io.github.wrobezin.eunha.entity.rule.InterestRule;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 待下载超链接
@@ -13,9 +12,28 @@ import lombok.NoArgsConstructor;
  * @date 2020/3/30 16:19
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class HyperLinkToDownload {
-    Integer depth;
-    HyperLink link;
+    private Integer depth;
+    private HyperLink link;
+    private HyperLinkToDownload parent;
+    private Double score;
+
+    private static final Double SCORE_DEFAULT = 0.0;
+
+    public HyperLinkToDownload() {
+        this.score = SCORE_DEFAULT;
+        this.depth = 0;
+    }
+
+    public HyperLinkToDownload(String url) {
+        super();
+        this.link = new HyperLink(url);
+    }
+
+    public HyperLinkToDownload(HyperLink link, HyperLinkToDownload parent, ParseResult parentParseResult, InterestRule interestRule) {
+        this.depth = parent.getDepth() + 1;
+        this.link = link;
+        this.parent = parent;
+
+    }
 }

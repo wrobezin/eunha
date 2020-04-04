@@ -19,7 +19,10 @@ class EunhaApplicationTest {
 
     @Test
     void test() {
-        CrawlRule crawlRule = CrawlRule.builder().seedUrl("http://jiaren.org/2014/09/01/luoji-4/").expandable(false).maxExpandDepth(0).build();
+        CrawlRule crawlRule = CrawlRule.builder().seedUrl("http://jiaren.org/category/d_human/")
+                .expandable(true)
+                .expandToOtherSite(false)
+                .maxExpandDepth(1).build();
         CustomizedRule customizedRule = CustomizedRule.builder().crawlRule(crawlRule).build();
         crawler.crawl(customizedRule);
     }
