@@ -19,7 +19,7 @@ public class GeneralHtmlParser extends AbstractParser {
         return OriginalDocument.builder()
                 .url(urlInfo.getUrl())
                 .title(document.title())
-                .body(document.body().text())
+                .body(document.body().toString())
                 .build();
     }
 

@@ -5,6 +5,7 @@ import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
 import io.github.wrobezin.eunha.data.entity.rule.CrawlRule;
 import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import io.github.wrobezin.eunha.data.repository.mongo.OriginalDocumentMongoRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @date 2020/3/31 23:02
  */
 @SpringBootTest
+@Slf4j
 class EunhaApplicationTest {
     @Autowired
     private PageCrawler crawler;
@@ -29,7 +31,7 @@ class EunhaApplicationTest {
                 .expandToOtherSite(false)
                 .maxExpandDepth(0).build();
         CustomizedRule customizedRule = CustomizedRule.builder().crawlRule(crawlRule).build();
-        crawler.crawl(customizedRule);
+        System.out.println(crawler.crawl(customizedRule));
     }
 
     @Test

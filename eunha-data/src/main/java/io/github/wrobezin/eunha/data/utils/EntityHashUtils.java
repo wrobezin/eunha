@@ -4,6 +4,7 @@ import io.github.wrobezin.eunha.data.entity.document.Article;
 import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,5 +36,9 @@ public final class EntityHashUtils {
                 document.getBody())
                 .map(str -> Optional.ofNullable(str).orElse(""))
                 .map(DigestUtils::sha1Hex).collect(Collectors.joining()));
+    }
+
+    public static String generateMongoId(String fingerPrint, Integer version, LocalDateTime updateTime) {
+        return DigestUtils.sha256Hex(fingerPrint + version + updateTime);
     }
 }

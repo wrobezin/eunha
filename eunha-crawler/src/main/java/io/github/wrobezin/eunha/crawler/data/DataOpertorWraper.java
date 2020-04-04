@@ -41,6 +41,8 @@ public class DataOpertorWraper {
     }
 
     public CrawlResult savePageData(ParseResult parseResult) {
-        return null;
+        return Optional.ofNullable(contentDataOperatorMap.get(parseResult.getContentType()))
+                .map(operator -> operator.savePageData(parseResult))
+                .orElse(null);
     }
 }

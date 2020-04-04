@@ -1,12 +1,11 @@
 package io.github.wrobezin.eunha.crawler.entity;
 
-import io.github.wrobezin.eunha.data.enums.PageContentTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 爬取结果
@@ -21,11 +20,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CrawlResult {
     private String searchEnginePageId;
-    private String databasePageId;
+    private String databaseId;
     private String url;
-    private PageContentTypeEnum contentType;
     private Boolean newPage;
     private Boolean updated;
     private Integer version;
-    private LocalDate finishTime;
+    private LocalDateTime finishTime;
 }
