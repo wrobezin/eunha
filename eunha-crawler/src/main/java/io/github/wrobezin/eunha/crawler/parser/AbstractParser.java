@@ -3,7 +3,7 @@ package io.github.wrobezin.eunha.crawler.parser;
 import io.github.wrobezin.eunha.crawler.entity.DownloadResult;
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
 import io.github.wrobezin.eunha.crawler.utils.HyperLinkUtils;
-import io.github.wrobezin.eunha.entity.document.HyperLink;
+import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;

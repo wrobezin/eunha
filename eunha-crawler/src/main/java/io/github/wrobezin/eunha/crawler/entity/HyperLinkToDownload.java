@@ -1,7 +1,7 @@
 package io.github.wrobezin.eunha.crawler.entity;
 
-import io.github.wrobezin.eunha.entity.document.HyperLink;
-import io.github.wrobezin.eunha.entity.rule.InterestRule;
+import io.github.wrobezin.eunha.data.entity.document.HyperLink;
+import io.github.wrobezin.eunha.data.entity.rule.InterestRule;
 import lombok.Data;
 
 /**
@@ -26,7 +26,7 @@ public class HyperLinkToDownload {
     }
 
     public HyperLinkToDownload(String url) {
-        super();
+        this();
         this.link = new HyperLink(url);
     }
 
@@ -34,6 +34,5 @@ public class HyperLinkToDownload {
         this.depth = parent.getDepth() + 1;
         this.link = link;
         this.parent = parent;
-
     }
 }

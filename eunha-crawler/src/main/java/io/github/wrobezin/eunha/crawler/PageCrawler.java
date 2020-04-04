@@ -1,15 +1,10 @@
 package io.github.wrobezin.eunha.crawler;
 
-import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
-import io.github.wrobezin.eunha.crawler.entity.DownloadResult;
 import io.github.wrobezin.eunha.crawler.entity.HyperLinkToDownload;
-import io.github.wrobezin.eunha.crawler.entity.ParseResult;
-import io.github.wrobezin.eunha.crawler.parser.ParserRouter;
-import io.github.wrobezin.eunha.crawler.queue.HyperLinkExpandQueue;
 import io.github.wrobezin.eunha.crawler.queue.MemoryHyperLinkExpandQueue;
-import io.github.wrobezin.eunha.entity.document.HyperLink;
-import io.github.wrobezin.eunha.entity.rule.CrawlRule;
-import io.github.wrobezin.eunha.entity.rule.CustomizedRule;
+import io.github.wrobezin.eunha.data.entity.document.HyperLink;
+import io.github.wrobezin.eunha.data.entity.rule.CrawlRule;
+import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -35,12 +29,15 @@ public class PageCrawler implements Crawler {
     // ----------------------------------------工作逻辑相关----------------------------------------
     private HyperLinkExpandQueue queue = new MemoryHyperLinkExpandQueue();
 
+    private final DataOpertorRouter dataOpertorRouter;
+
     private final ParserRouter parserRouter;
 
     private final Integer SLEEP_TIME = 1000;
 
-    public PageCrawler(ParserRouter parserRouter) {
+    public PageCrawler(ParserRouter parserRouter, DataOpertorRouter dataOpertorRouter) {
         this.parserRouter = parserRouter;
+        this.dataOpertorRouter = dataOpertorRouter;
     }
 
     @Override
@@ -91,9 +88,7 @@ public class PageCrawler implements Crawler {
      * @return 最终爬取结果
      */
     private CrawlResult handleParseResult(ParseResult parseResult) {
-        // TODO 持久化
-//        log.info(parseResult.getContent().toString());
-        return null;
+        return dataOpertorRouter.savePageData(parseResult);
     }
 
     private void sleep() {

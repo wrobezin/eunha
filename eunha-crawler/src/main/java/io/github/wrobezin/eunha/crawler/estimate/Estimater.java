@@ -1,7 +1,7 @@
 package io.github.wrobezin.eunha.crawler.estimate;
 
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
-import io.github.wrobezin.eunha.entity.rule.InterestRule;
+import io.github.wrobezin.eunha.data.entity.rule.InterestRule;
 
 /**
  * @author yuan

@@ -1,6 +1,6 @@
 package io.github.wrobezin.eunha.crawler.utils;
 
-import io.github.wrobezin.eunha.entity.document.HyperLink;
+import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import org.jsoup.nodes.Element;

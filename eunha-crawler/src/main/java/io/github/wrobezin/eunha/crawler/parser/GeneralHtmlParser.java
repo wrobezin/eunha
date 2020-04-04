@@ -1,6 +1,6 @@
 package io.github.wrobezin.eunha.crawler.parser;
 
-import io.github.wrobezin.eunha.entity.document.OriginalDocument;
+import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,8 @@ public class GeneralHtmlParser extends AbstractParser {
     protected Object parseContent(UrlInfo urlInfo, Document document) {
         return OriginalDocument.builder()
                 .url(urlInfo.getUrl())
-                .body(document.body().toString())
+                .title(document.title())
+                .body(document.body().text())
                 .build();
     }
 

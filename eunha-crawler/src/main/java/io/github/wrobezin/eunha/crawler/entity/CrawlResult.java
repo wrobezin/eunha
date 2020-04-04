@@ -1,6 +1,6 @@
 package io.github.wrobezin.eunha.crawler.entity;
 
-import io.github.wrobezin.eunha.enums.PageContentTypeEnum;
+import io.github.wrobezin.eunha.data.enums.PageContentTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

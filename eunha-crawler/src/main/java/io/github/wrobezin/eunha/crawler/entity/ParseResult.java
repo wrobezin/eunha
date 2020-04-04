@@ -1,6 +1,6 @@
 package io.github.wrobezin.eunha.crawler.entity;
 
-import io.github.wrobezin.eunha.entity.document.HyperLink;
+import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

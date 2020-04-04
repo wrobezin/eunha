@@ -1,9 +1,8 @@
 package io.github.wrobezin.eunha.crawler;
 
 import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
-import io.github.wrobezin.eunha.entity.rule.CustomizedRule;
+import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 
-import java.util.List;
 
 /**
  * 爬虫接口
