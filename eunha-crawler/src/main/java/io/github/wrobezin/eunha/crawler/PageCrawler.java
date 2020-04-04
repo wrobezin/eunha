@@ -1,6 +1,12 @@
 package io.github.wrobezin.eunha.crawler;
 
+import io.github.wrobezin.eunha.crawler.data.DataOpertorWraper;
+import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
+import io.github.wrobezin.eunha.crawler.entity.DownloadResult;
 import io.github.wrobezin.eunha.crawler.entity.HyperLinkToDownload;
+import io.github.wrobezin.eunha.crawler.entity.ParseResult;
+import io.github.wrobezin.eunha.crawler.parser.ParserRouter;
+import io.github.wrobezin.eunha.crawler.queue.HyperLinkExpandQueue;
 import io.github.wrobezin.eunha.crawler.queue.MemoryHyperLinkExpandQueue;
 import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import io.github.wrobezin.eunha.data.entity.rule.CrawlRule;
@@ -13,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -29,15 +36,15 @@ public class PageCrawler implements Crawler {
     // ----------------------------------------工作逻辑相关----------------------------------------
     private HyperLinkExpandQueue queue = new MemoryHyperLinkExpandQueue();
 
-    private final DataOpertorRouter dataOpertorRouter;
+    private final DataOpertorWraper dataOpertorWraper;
 
     private final ParserRouter parserRouter;
 
     private final Integer SLEEP_TIME = 1000;
 
-    public PageCrawler(ParserRouter parserRouter, DataOpertorRouter dataOpertorRouter) {
+    public PageCrawler(ParserRouter parserRouter, DataOpertorWraper dataOpertorWraper) {
         this.parserRouter = parserRouter;
-        this.dataOpertorRouter = dataOpertorRouter;
+        this.dataOpertorWraper = dataOpertorWraper;
     }
 
     @Override
@@ -88,7 +95,7 @@ public class PageCrawler implements Crawler {
      * @return 最终爬取结果
      */
     private CrawlResult handleParseResult(ParseResult parseResult) {
-        return dataOpertorRouter.savePageData(parseResult);
+        return dataOpertorWraper.savePageData(parseResult);
     }
 
     private void sleep() {

@@ -1,4 +1,4 @@
-package io.github.wrobezin.eunha.data.app;
+package io.github.wrobezin.eunha.app;
 
 import io.github.wrobezin.eunha.crawler.PageCrawler;
 import io.github.wrobezin.eunha.data.entity.rule.CrawlRule;
