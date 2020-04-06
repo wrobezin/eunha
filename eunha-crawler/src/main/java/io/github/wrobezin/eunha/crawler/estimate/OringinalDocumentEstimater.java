@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 /**
+ * 原始文档兴趣规则匹配器
+ *
  * @author yuan
  * @version 1.0
  * @date 2020/4/4 16:11

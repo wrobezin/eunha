@@ -16,6 +16,8 @@ import java.util.Queue;
 import static io.github.wrobezin.eunha.data.enums.RuleItemLogicTypeEnum.AND;
 
 /**
+ * 兴趣规则匹配器接口
+ *
  * @author yuan
  * @version 1.0
  * @date 2020/4/4 16:09
@@ -67,8 +69,10 @@ public interface Estimater {
         // 计算组内各项的匹配度
         ruleItems.forEach(item -> {
             if (item instanceof InterestRuleItemGroup) {
+                // 递归计算子组
                 compatibilities.offer(estimate(content, ((InterestRuleItemGroup) item).getRuleItems()));
             } else {
+                // 计算单项
                 compatibilities.offer(fit(content, (SingleInterestRuleItem) item));
             }
             logicTypes.offer(item.getLogicType());

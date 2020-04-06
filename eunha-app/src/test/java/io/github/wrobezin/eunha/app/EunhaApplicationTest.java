@@ -100,6 +100,7 @@ class EunhaApplicationTest {
                 .title("C")
                 .body("")
                 .build();
+        System.out.println(rule2);
         System.out.println(documentEstimater.estimate(document21, rule2.getInterestRules()));
         System.out.println(documentEstimater.estimate(document22, rule2.getInterestRules()));
         System.out.println(documentEstimater.estimate(document23, rule2.getInterestRules()));
