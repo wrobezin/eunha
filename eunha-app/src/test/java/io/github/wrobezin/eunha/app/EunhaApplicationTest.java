@@ -1,14 +1,20 @@
 package io.github.wrobezin.eunha.app;
 
 import io.github.wrobezin.eunha.crawler.PageCrawler;
+import io.github.wrobezin.eunha.crawler.estimate.OringinalDocumentEstimater;
 import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
 import io.github.wrobezin.eunha.data.entity.rule.CrawlRule;
 import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
+import io.github.wrobezin.eunha.data.entity.rule.InterestRule;
+import io.github.wrobezin.eunha.data.entity.rule.SingleInterestRuleItem;
+import io.github.wrobezin.eunha.data.enums.RuleItemJudgeTypeEnum;
 import io.github.wrobezin.eunha.data.repository.mongo.OriginalDocumentMongoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Arrays;
 
 /**
  * @author yuan
@@ -20,6 +26,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 class EunhaApplicationTest {
     @Autowired
     private PageCrawler crawler;
+
+    @Autowired
+    private OringinalDocumentEstimater documentEstimater;
 
     @Autowired
     private OriginalDocumentMongoRepository mongoRepository;
@@ -36,6 +45,7 @@ class EunhaApplicationTest {
 
     @Test
     void testMongo() {
+        mongoRepository.deleteAllByUrl("test");
         OriginalDocument document = OriginalDocument.builder()
                 .id("1")
                 .url("test")
@@ -48,5 +58,52 @@ class EunhaApplicationTest {
         document.setId("2");
         System.out.println(mongoRepository.save(document));
         System.out.println(mongoRepository.findFirstByUrlOrderByVersionDesc("test"));
+        mongoRepository.deleteAllByUrl("test");
+    }
+
+    @Test
+    void testEstimater() {
+        InterestRule rule1 = InterestRule.first(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "A")
+                .and(InterestRule.group(Arrays.asList(
+                        SingleInterestRuleItem.first(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "B"),
+                        SingleInterestRuleItem.or(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "C"))));
+        OriginalDocument document11 = OriginalDocument.builder()
+                .title("A")
+                .body("")
+                .build();
+        OriginalDocument document12 = OriginalDocument.builder()
+                .title("AB")
+                .body("")
+                .build();
+        System.out.println(rule1);
+        System.out.println(documentEstimater.estimate(document11, rule1.getInterestRules()));
+        System.out.println(documentEstimater.estimate(document12, rule1.getInterestRules()));
+        System.out.println("---------------------------------------");
+        OringinalDocumentEstimater documentEstimater = new OringinalDocumentEstimater();
+        InterestRule rule2 = InterestRule.first(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "A")
+                .or(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "B")
+                .and(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "C")
+                .or(InterestRule.group(Arrays.asList(
+                        SingleInterestRuleItem.first(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "D"),
+                        InterestRule.andGroup(Arrays.asList(
+                                SingleInterestRuleItem.first(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "E"),
+                                SingleInterestRuleItem.and(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "F"))),
+                        InterestRule.andGroup(Arrays.asList(
+                                SingleInterestRuleItem.first(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "G"),
+                                InterestRule.orGroup(Arrays.asList(
+                                        SingleInterestRuleItem.first(RuleItemJudgeTypeEnum.TITLE_NOT_CONTAIN, "H"),
+                                        SingleInterestRuleItem.and(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "I"))))))));
+        OriginalDocument document21 = OriginalDocument.builder()
+                .title("BDE")
+                .body("")
+                .build();
+        OriginalDocument document22 = OriginalDocument.builder()
+                .title("ACDFGI")
+                .body("")
+                .build();
+        System.out.println(rule2);
+        System.out.println(documentEstimater.estimate(document21, rule2.getInterestRules()));
+        System.out.println(documentEstimater.estimate(document22, rule2.getInterestRules()));
+        System.out.println("---------------------------------------");
     }
 }

@@ -16,9 +16,7 @@ public enum RuleItemLogicTypeEnum {
     /** 第一个规则项，前面不带逻辑运算符 **/
     FIRST(0, "首项"),
     AND(1, "与"),
-    OR(2, "或"),
-    AND_NOT(3, "与非"),
-    OR_NOT(4, "或非");
+    OR(2, "或");
 
     private Integer logic;
     private String description;

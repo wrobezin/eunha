@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import static io.github.wrobezin.eunha.data.enums.RuleItemLogicTypeEnum.AND;
+import static io.github.wrobezin.eunha.data.enums.RuleItemLogicTypeEnum.OR;
+
 /**
  * 兴趣规则
  *
@@ -26,6 +29,14 @@ public class InterestRule {
         return new InterestRuleItemGroup(ruleItems);
     }
 
+    public static InterestRuleItemGroup andGroup(List<? extends AbstractInterestRuleItem> ruleItems) {
+        return new InterestRuleItemGroup(AND,ruleItems);
+    }
+
+    public static InterestRuleItemGroup orGroup(List<? extends AbstractInterestRuleItem> ruleItems) {
+        return new InterestRuleItemGroup(OR,ruleItems);
+    }
+
     public static InterestRule first(InterestRuleItemGroup group) {
         InterestRule interestRule = new InterestRule(new LinkedList<>());
         group.setLogicType(RuleItemLogicTypeEnum.FIRST);
@@ -38,7 +49,7 @@ public class InterestRule {
     }
 
     public InterestRule and(InterestRuleItemGroup group) {
-        group.setLogicType(RuleItemLogicTypeEnum.AND);
+        group.setLogicType(AND);
         this.interestRules.add(group);
         return this;
     }
@@ -55,26 +66,6 @@ public class InterestRule {
 
     public InterestRule or(RuleItemJudgeTypeEnum judgeType, String value) {
         return or(new InterestRuleItemGroup(Collections.singletonList(SingleInterestRuleItem.first(judgeType, value))));
-    }
-
-    public InterestRule andNot(InterestRuleItemGroup group) {
-        group.setLogicType(RuleItemLogicTypeEnum.AND_NOT);
-        this.interestRules.add(group);
-        return this;
-    }
-
-    public InterestRule andNot(RuleItemJudgeTypeEnum judgeType, String value) {
-        return andNot(new InterestRuleItemGroup(Collections.singletonList(SingleInterestRuleItem.first(judgeType, value))));
-    }
-
-    public InterestRule orNot(InterestRuleItemGroup group) {
-        group.setLogicType(RuleItemLogicTypeEnum.OR_NOT);
-        this.interestRules.add(group);
-        return this;
-    }
-
-    public InterestRule orNot(RuleItemJudgeTypeEnum judgeType, String value) {
-        return orNot(new InterestRuleItemGroup(Collections.singletonList(SingleInterestRuleItem.first(judgeType, value))));
     }
 
     public static void main(String[] args) {

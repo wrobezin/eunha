@@ -29,6 +29,11 @@ public class InterestRuleItemGroup extends AbstractInterestRuleItem {
         this.ruleItems = ruleItems;
     }
 
+    public InterestRuleItemGroup(RuleItemLogicTypeEnum logicType, List<? extends AbstractInterestRuleItem> ruleItems) {
+        this(ruleItems);
+        this.logicType = logicType;
+    }
+
     @Override
     public String toString() {
         return "(" + this.logicType.getDescription() + ":" + ruleItems.stream().map(Objects::toString).collect(Collectors.joining(",")) + ")";

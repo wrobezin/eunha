@@ -11,6 +11,6 @@ import lombok.Data;
  * @date 2020/3/28 20:30
  */
 @Data
-abstract class AbstractInterestRuleItem {
+public abstract class AbstractInterestRuleItem {
     protected RuleItemLogicTypeEnum logicType;
 }

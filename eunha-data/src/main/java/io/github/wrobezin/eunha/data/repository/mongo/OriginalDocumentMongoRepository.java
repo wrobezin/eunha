@@ -16,4 +16,11 @@ public interface OriginalDocumentMongoRepository extends MongoRepository<Origina
      * @return 对应URL的最新版原始文档
      */
     OriginalDocument findFirstByUrlOrderByVersionDesc(String url);
+
+    /**
+     * 根据URL删除全部文档
+     *
+     * @param url url
+     */
+    void deleteAllByUrl(String url);
 }
