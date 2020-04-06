@@ -75,12 +75,37 @@ class EunhaApplicationTest {
                 .title("AB")
                 .body("")
                 .build();
+        OriginalDocument document13 = OriginalDocument.builder()
+                .title("C")
+                .body("")
+                .build();
         System.out.println(rule1);
         System.out.println(documentEstimater.estimate(document11, rule1.getInterestRules()));
         System.out.println(documentEstimater.estimate(document12, rule1.getInterestRules()));
+        System.out.println(documentEstimater.estimate(document13, rule1.getInterestRules()));
         System.out.println("---------------------------------------");
-        OringinalDocumentEstimater documentEstimater = new OringinalDocumentEstimater();
+
         InterestRule rule2 = InterestRule.first(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "A")
+                .or(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "B")
+                .and(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "C");
+        OriginalDocument document21 = OriginalDocument.builder()
+                .title("A")
+                .body("")
+                .build();
+        OriginalDocument document22 = OriginalDocument.builder()
+                .title("AB")
+                .body("")
+                .build();
+        OriginalDocument document23 = OriginalDocument.builder()
+                .title("C")
+                .body("")
+                .build();
+        System.out.println(documentEstimater.estimate(document21, rule2.getInterestRules()));
+        System.out.println(documentEstimater.estimate(document22, rule2.getInterestRules()));
+        System.out.println(documentEstimater.estimate(document23, rule2.getInterestRules()));
+        System.out.println("---------------------------------------");
+
+        InterestRule rule3 = InterestRule.first(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "A")
                 .or(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "B")
                 .and(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "C")
                 .or(InterestRule.group(Arrays.asList(
@@ -93,17 +118,37 @@ class EunhaApplicationTest {
                                 InterestRule.orGroup(Arrays.asList(
                                         SingleInterestRuleItem.first(RuleItemJudgeTypeEnum.TITLE_NOT_CONTAIN, "H"),
                                         SingleInterestRuleItem.and(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "I"))))))));
-        OriginalDocument document21 = OriginalDocument.builder()
+        OriginalDocument document31 = OriginalDocument.builder()
                 .title("BDE")
                 .body("")
                 .build();
-        OriginalDocument document22 = OriginalDocument.builder()
+        OriginalDocument document32 = OriginalDocument.builder()
                 .title("ACDFGI")
                 .body("")
                 .build();
-        System.out.println(rule2);
-        System.out.println(documentEstimater.estimate(document21, rule2.getInterestRules()));
-        System.out.println(documentEstimater.estimate(document22, rule2.getInterestRules()));
+        OriginalDocument document33 = OriginalDocument.builder()
+                .title("FD")
+                .body("")
+                .build();
+        OriginalDocument document34 = OriginalDocument.builder()
+                .title("IB")
+                .body("")
+                .build();
+        OriginalDocument document35 = OriginalDocument.builder()
+                .title("I")
+                .body("")
+                .build();
+        OriginalDocument document36 = OriginalDocument.builder()
+                .title("GFC")
+                .body("")
+                .build();
+        System.out.println(rule3);
+        System.out.println(documentEstimater.estimate(document31, rule3.getInterestRules()));
+        System.out.println(documentEstimater.estimate(document32, rule3.getInterestRules()));
+        System.out.println(documentEstimater.estimate(document33, rule3.getInterestRules()));
+        System.out.println(documentEstimater.estimate(document34, rule3.getInterestRules()));
+        System.out.println(documentEstimater.estimate(document35, rule3.getInterestRules()));
+        System.out.println(documentEstimater.estimate(document36, rule3.getInterestRules()));
         System.out.println("---------------------------------------");
     }
 }
