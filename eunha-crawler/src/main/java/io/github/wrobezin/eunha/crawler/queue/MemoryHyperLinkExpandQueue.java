@@ -1,6 +1,7 @@
 package io.github.wrobezin.eunha.crawler.queue;
 
 import io.github.wrobezin.eunha.crawler.entity.HyperLinkToDownload;
+import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 
 import javax.validation.constraints.NotNull;
@@ -21,8 +22,8 @@ public class MemoryHyperLinkExpandQueue implements HyperLinkExpandQueue {
 
     private PriorityQueue<HyperLinkToDownload> queue;
 
-    /** 用于记录已访问的URL */
-    private Set<String> visited;
+    /** 用于记录已在队的超链接 */
+    private Set<HyperLink> inQueue;
 
     private static Integer getPathDepth(@NotNull final HyperLinkToDownload link) {
         return HttpUrlUtils.parseUrl(link.getLink().getUrl()).getPath().split(URL_SEPARATION_TOKEN).length;
@@ -33,19 +34,19 @@ public class MemoryHyperLinkExpandQueue implements HyperLinkExpandQueue {
      */
     public MemoryHyperLinkExpandQueue() {
         this.queue = new PriorityQueue<>(Comparator.comparing(MemoryHyperLinkExpandQueue::getPathDepth));
-        this.visited = new HashSet<>(64);
+        this.inQueue = new HashSet<>(64);
     }
 
     public MemoryHyperLinkExpandQueue(Comparator<HyperLinkToDownload> comparator) {
         this.queue = new PriorityQueue<>(comparator);
-        this.visited = new HashSet<>(64);
+        this.inQueue = new HashSet<>(64);
     }
 
     @Override
     public boolean offer(HyperLinkToDownload hyperLink) {
-        if (!this.visited.contains(hyperLink.getLink().getUrl())) {
+        if (!this.inQueue.contains(hyperLink.getLink())) {
             this.queue.offer(hyperLink);
-            this.visited.add(hyperLink.getLink().getUrl());
+            this.inQueue.add(hyperLink.getLink());
             return true;
         }
         return false;

@@ -3,6 +3,9 @@ package io.github.wrobezin.eunha.crawler.utils;
 import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
+import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.util.Collection;
@@ -27,11 +30,13 @@ public final class HyperLinkUtils {
                 .map(Collection::stream)
                 .orElse(Stream.empty())
                 .map(aTag -> {
-                    String description = Optional.ofNullable(aTag.text()).orElse("");
+                    String title = aTag.attr("title");
+                    String text = aTag.text();
+                    String anchorText = StringUtils.isBlank(title) ? text : title;
                     String url = Optional.ofNullable(aTag.attr("href"))
                             .map(HyperLinkUtils::cutWhiteToken)
                             .orElse("");
-                    return new HyperLink(description, url);
+                    return new HyperLink(anchorText, url);
                 })
                 .filter(link -> satisfy.test(HttpUrlUtils.parseUrl(link.getUrl())))
                 .collect(Collectors.toList());
@@ -47,5 +52,18 @@ public final class HyperLinkUtils {
      */
     private static String cutWhiteToken(String url) {
         return url.split("\\s")[0];
+    }
+
+    public static void main(String[] args) {
+        String html = "<div class=\"cat-excerpt clearfloat subfeature\">\n" +
+                "\t\t\t\t\t<a href=\"http://jiaren.org/2017/06/15/zaoan-1045/\" rel=\"bookmark\"\n" +
+                "\t\t\t\t\t\ttitle=\"Permanent Link to 早安心语：远离消耗你的人，也不去消耗别人\"\n" +
+                "\t\t\t\t\t\ttarget=\"_blank\"><img width=\"70\" height=\"70\" src=\"http://pic.jiaren.org/wp-pic/2017/06/c21e5ec58cd27287e8eb92289772fb44906feabbcfcf8-Mts40z_fw658-70x70.jpeg\" class=\"attachment-archive-small\" alt=\"c21e5ec58cd27287e8eb92289772fb44906feabbcfcf8-Mts40z_fw658\" /></a>\n" +
+                "\t\t\t\t\t\t<h4><a href=\"http://jiaren.org/2017/06/15/zaoan-1045/\" rel=\"bookmark\"\n" +
+                "\t\t\t\t\t\t\t\ttitle=\"早安心语：远离消耗你的人，也不去消耗别人\" target=\"_blank\">早安心语：远离消耗你的人，也不去消耗别人</a></h4>\n" +
+                "\t\t\t\t\t\t<p>早安心语：你并不内向，只是不想搭理在你心中不重要的人。更多美文请关注佳人官方微信号：佳人（ID：jiarenorg） ， [&hellip;]</p>\n" +
+                "\t\t\t\t</div>";
+        Document parse = Jsoup.parse(html);
+        parse.getElementsByTag("a").forEach(System.out::println);
     }
 }

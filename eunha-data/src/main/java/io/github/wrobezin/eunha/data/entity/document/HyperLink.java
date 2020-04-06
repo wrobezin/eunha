@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.util.Objects;
+
 /**
  * @author yuan
  * @version 1.0
@@ -26,5 +28,21 @@ public class HyperLink {
     public HyperLink(String url) {
         this.url = url;
         this.anchorText = "";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return this.hashCode() == o.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAnchorText(), getUrl());
     }
 }

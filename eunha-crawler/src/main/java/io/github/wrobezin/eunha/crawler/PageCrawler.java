@@ -5,12 +5,14 @@ import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
 import io.github.wrobezin.eunha.crawler.entity.DownloadResult;
 import io.github.wrobezin.eunha.crawler.entity.HyperLinkToDownload;
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
+import io.github.wrobezin.eunha.crawler.estimate.EstimaterRouter;
 import io.github.wrobezin.eunha.crawler.parser.ParserRouter;
 import io.github.wrobezin.eunha.crawler.queue.HyperLinkExpandQueue;
 import io.github.wrobezin.eunha.crawler.queue.MemoryHyperLinkExpandQueue;
 import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import io.github.wrobezin.eunha.data.entity.rule.CrawlRule;
 import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
+import io.github.wrobezin.eunha.data.entity.rule.InterestRule;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -34,22 +37,28 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class PageCrawler implements Crawler {
     // ----------------------------------------工作逻辑相关----------------------------------------
-    private HyperLinkExpandQueue queue = new MemoryHyperLinkExpandQueue();
+    private HyperLinkExpandQueue queue = new MemoryHyperLinkExpandQueue((l1, l2) -> l2.getScore().compareTo(l1.getScore()));
+
 
     private final DataOpertorWraper dataOpertorWraper;
 
     private final ParserRouter parserRouter;
 
+    private final EstimaterRouter estimaterRouter;
+
     private final Integer SLEEP_TIME = 1000;
 
-    public PageCrawler(ParserRouter parserRouter, DataOpertorWraper dataOpertorWraper) {
+    public PageCrawler(ParserRouter parserRouter, DataOpertorWraper dataOpertorWraper, EstimaterRouter estimaterRouter) {
         this.parserRouter = parserRouter;
         this.dataOpertorWraper = dataOpertorWraper;
+        this.estimaterRouter = estimaterRouter;
     }
 
     @Override
     public List<CrawlResult> crawl(CustomizedRule customizedRule) {
         CrawlRule crawlRule = customizedRule.getCrawlRule();
+        InterestRule interestRule = customizedRule.getInterestRule();
+        HashSet<String> visited = new HashSet<>(64);
         // 将种子URL加入队列
         queue.offer(new HyperLinkToDownload(crawlRule.getSeedUrl()));
         List<CrawlResult> crawlResults = new ArrayList<>();
@@ -60,25 +69,36 @@ public class PageCrawler implements Crawler {
                 continue;
             }
             try {
-                log.info("下载链接：{} {}", linkToDownload.getLink().getAnchorText(), linkToDownload.getLink().getUrl());
+                String urlDownloading = linkToDownload.getLink().getUrl();
+                if (visited.contains(urlDownloading)) {
+                    continue;
+                }
+                log.info("下载链接：{} {}", linkToDownload.getLink().getAnchorText(), urlDownloading);
                 // 下载页面
                 DownloadResult downloadResult = downloadPage(linkToDownload.getLink());
+                visited.add(urlDownloading);
                 // 调用解析器解析页面
                 ParseResult parseResult = parserRouter.parse(downloadResult);
                 // 处理解析结果并将最终爬取结果添加到爬取结果列表
                 crawlResults.add(handleParseResult(parseResult));
+                // 评估页面与兴趣规则之间的匹配度
+                double compatibility = estimaterRouter.estimate(parseResult, interestRule);
                 // URL扩展
                 if (crawlRule.getExpandable()) {
                     parseResult.getLinks().stream()
                             .filter(url -> crawlRule.getExpandToOtherSite() || HttpUrlUtils.hasSameHost(url.getUrl(), linkToDownload.getLink().getUrl()))
-                            .map(expandedLink -> new HyperLinkToDownload(expandedLink, linkToDownload, parseResult, customizedRule.getInterestRule()))
-                            .forEach(queue::offer);
+                            .map(expandedLink -> new HyperLinkToDownload(expandedLink, linkToDownload, parseResult, interestRule))
+                            .forEach(expandedLink -> {
+                                expandedLink.setScore(estimaterRouter.estimate(compatibility, expandedLink, interestRule));
+                                queue.offer(expandedLink);
+                            });
                 }
                 sleep();
             } catch (IOException e) {
                 log.error("下载{}出错：{}", linkToDownload, e);
             }
         }
+        visited.clear();
         return crawlResults;
     }
 
@@ -96,6 +116,7 @@ public class PageCrawler implements Crawler {
      */
     private CrawlResult handleParseResult(ParseResult parseResult) {
         return dataOpertorWraper.savePageData(parseResult);
+//        return null;
     }
 
     private void sleep() {

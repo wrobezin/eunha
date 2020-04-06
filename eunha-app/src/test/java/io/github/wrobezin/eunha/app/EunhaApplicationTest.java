@@ -38,9 +38,16 @@ class EunhaApplicationTest {
         CrawlRule crawlRule = CrawlRule.builder().seedUrl("http://jiaren.org/category/d_human/")
                 .expandable(true)
                 .expandToOtherSite(false)
-                .maxExpandDepth(0).build();
-        CustomizedRule customizedRule = CustomizedRule.builder().crawlRule(crawlRule).build();
+                .maxExpandDepth(1).build();
+        InterestRule interestRule = InterestRule
+                .first(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "早安心语")
+                .or(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "晚安心语");
+        CustomizedRule customizedRule = CustomizedRule.builder()
+                .crawlRule(crawlRule)
+                .interestRule(interestRule)
+                .build();
         System.out.println(crawler.crawl(customizedRule));
+//        crawler.crawl(customizedRule);
     }
 
     @Test

@@ -1,8 +1,8 @@
 package io.github.wrobezin.eunha.crawler.estimate;
 
+import io.github.wrobezin.eunha.crawler.anotation.EstimaterFor;
 import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
 import io.github.wrobezin.eunha.data.entity.rule.SingleInterestRuleItem;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @version 1.0
  * @date 2020/4/4 16:11
  */
-@Component
+@EstimaterFor(OriginalDocument.class)
 public class OringinalDocumentEstimater implements Estimater {
     @Override
     public double fit(Object content, SingleInterestRuleItem ruleItem) {

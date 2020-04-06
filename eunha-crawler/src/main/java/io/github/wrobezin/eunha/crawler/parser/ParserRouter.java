@@ -16,18 +16,17 @@ import java.util.Map;
  */
 @Component
 public class ParserRouter {
-    // TODO 扫包注册专用解析器
-    private Map<String, AbstractParser> specificParsers;
-    private final GeneralHtmlParser generalHtmlParser;
+    // TODO 扫包注册
+    private Map<String, AbstractParser> parserMap;
+
+    private GeneralHtmlParser generalHtmlParser;
 
     public ParserRouter(GeneralHtmlParser generalHtmlParser) {
-        this.specificParsers = new HashMap<>(16);
+        this.parserMap = new HashMap<>(16);
         this.generalHtmlParser = generalHtmlParser;
     }
 
     public ParseResult parse(DownloadResult downloadResult) {
-        String host = downloadResult.getUrlInfo().getHost();
-        AbstractParser abstractParser = specificParsers.getOrDefault(host, generalHtmlParser);
-        return abstractParser.parse(downloadResult);
+        return parserMap.getOrDefault(downloadResult.getUrlInfo().getHost(), generalHtmlParser).parse(downloadResult);
     }
 }
