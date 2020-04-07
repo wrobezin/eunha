@@ -13,6 +13,7 @@
 
     <properties>
         <eunha-version>0.0.1-SNAPSHOT</eunha-version>
+        <diff-utils-version>4.5</diff-utils-version>
     </properties>
 
     <dependencies>
@@ -21,6 +22,13 @@
             <groupId>io.github.wrobezin</groupId>
             <artifactId>eunha-crawler</artifactId>
             <version>${eunha-version}</version>
+        </dependency>
+
+        <!-- DiffUtils -->
+        <dependency>
+            <groupId>io.github.java-diff-utils</groupId>
+            <artifactId>java-diff-utils</artifactId>
+            <version>${diff-utils-version}</version>
         </dependency>
     </dependencies>
 

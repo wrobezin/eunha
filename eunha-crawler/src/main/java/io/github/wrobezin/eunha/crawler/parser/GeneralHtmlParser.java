@@ -5,6 +5,9 @@ import io.github.wrobezin.framework.utils.http.UrlInfo;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 /**
  * 通用HTML解析器
  *
@@ -19,7 +22,13 @@ public class GeneralHtmlParser extends AbstractParser {
         return OriginalDocument.builder()
                 .url(urlInfo.getUrl())
                 .title(document.title())
-                .body(document.body().toString())
+                .body(document.getElementsByTag("body")
+                        .get(0)
+                        .children()
+                        .stream()
+                        .filter(tag -> !"script".equals(tag.tagName()))
+                        .map(Objects::toString)
+                        .collect(Collectors.joining()))
                 .build();
     }
 
