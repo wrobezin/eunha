@@ -39,7 +39,6 @@ public class PageCrawler implements Crawler {
     // ----------------------------------------工作逻辑相关----------------------------------------
     private HyperLinkExpandQueue queue = new MemoryHyperLinkExpandQueue((l1, l2) -> l2.getScore().compareTo(l1.getScore()));
 
-
     private final DataOpertorWraper dataOpertorWraper;
 
     private final ParserRouter parserRouter;

@@ -34,11 +34,12 @@ public class OriginalDocumentDataOperator implements ContentDataOperator {
         OriginalDocument documentInMongo = mongoRepository.findFirstByUrlOrderByVersionDesc(document.getUrl());
         String fingerPrint = EntityHashUtils.generateOriginalFingerPrint(document);
         String esId = EntityHashUtils.generateUrlHash(document.getUrl());
-        crawlResult.setSearchEnginePageId(esId);
+        crawlResult.setContentEsId(esId);
         int dbVersion = Optional.ofNullable(documentInMongo).map(OriginalDocument::getVersion).orElse(0);
         boolean newPage = documentInMongo == null;
         crawlResult.setNewPage(newPage);
         crawlResult.setUrl(document.getUrl());
+        crawlResult.setContentType(OriginalDocument.class.getSimpleName());
         if (newPage || !fingerPrint.equals(documentInMongo.getFingerPrint())) {
             document.setFingerPrint(fingerPrint);
             int version = dbVersion + 1;
@@ -51,13 +52,13 @@ public class OriginalDocumentDataOperator implements ContentDataOperator {
             esRepository.save(document);
             crawlResult.setUpdated(true);
             crawlResult.setVersion(version);
-            crawlResult.setDatabaseId(mongoId);
+            crawlResult.setContentDbId(mongoId);
             crawlResult.setFinishTime(LocalDateTime.now());
             return crawlResult;
         }
         crawlResult.setUpdated(false);
         crawlResult.setVersion(dbVersion);
-        crawlResult.setDatabaseId(documentInMongo.getId());
+        crawlResult.setContentDbId(documentInMongo.getId());
         crawlResult.setFinishTime(LocalDateTime.now());
         return crawlResult;
     }

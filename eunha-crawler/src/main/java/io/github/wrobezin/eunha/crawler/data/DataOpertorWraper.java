@@ -3,12 +3,16 @@ package io.github.wrobezin.eunha.crawler.data;
 import io.github.wrobezin.eunha.crawler.anotation.DataOperatorFor;
 import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
+import io.github.wrobezin.eunha.data.entity.document.Page;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchRepository;
+import io.github.wrobezin.eunha.data.utils.EntityHashUtils;
+import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import io.github.wrobezin.framework.utils.spring.BeanHelper;
 import io.github.wrobezin.framework.utils.spring.PackageScanUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -41,8 +45,25 @@ public class DataOpertorWraper {
     }
 
     public CrawlResult savePageData(ParseResult parseResult) {
-        return Optional.ofNullable(contentDataOperatorMap.get(parseResult.getContentType()))
+        CrawlResult crawlResult = Optional.ofNullable(contentDataOperatorMap.get(parseResult.getContentType()))
                 .map(operator -> operator.savePageData(parseResult))
-                .orElse(null);
+                .orElse(CrawlResult.NO_RESULT);
+        String url = crawlResult.getUrl();
+        String pageId = EntityHashUtils.generateUrlHash(url);
+        crawlResult.setPageId(pageId);
+        if (crawlResult.getUpdated()) {
+            Page page = pageRepository.findById(pageId)
+                    .orElse(Page.builder()
+                            .id(pageId)
+                            .host(HttpUrlUtils.parseUrl(url).getHost())
+                            .url(url)
+                            .build());
+            page.setHyperLinks(parseResult.getLinks());
+            page.setContentId(crawlResult.getContentEsId());
+            page.setContentType(crawlResult.getContentType());
+            page.setUpdateTime(LocalDateTime.now());
+            pageRepository.save(page);
+        }
+        return crawlResult;
     }
 }

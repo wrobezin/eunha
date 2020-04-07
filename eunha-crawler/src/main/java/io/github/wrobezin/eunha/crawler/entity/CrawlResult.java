@@ -19,11 +19,24 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CrawlResult {
-    private String searchEnginePageId;
-    private String databaseId;
+    private String pageId;
+    private String contentEsId;
+    private String contentDbId;
     private String url;
+    private String contentType;
     private Boolean newPage;
     private Boolean updated;
     private Integer version;
     private LocalDateTime finishTime;
+
+    public static final CrawlResult NO_RESULT = CrawlResult.builder()
+            .pageId("")
+            .contentEsId("")
+            .contentDbId("")
+            .url("")
+            .contentType("")
+            .newPage(false)
+            .updated(false)
+            .version(-1)
+            .build();
 }
