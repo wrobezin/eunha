@@ -47,7 +47,6 @@ class EunhaApplicationTest {
                 .interestRule(interestRule)
                 .build();
         System.out.println(crawler.crawl(customizedRule));
-//        crawler.crawl(customizedRule);
     }
 
     @Test

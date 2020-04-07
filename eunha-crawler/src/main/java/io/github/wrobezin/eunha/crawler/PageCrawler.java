@@ -115,7 +115,6 @@ public class PageCrawler implements Crawler {
      */
     private CrawlResult handleParseResult(ParseResult parseResult) {
         return dataOpertorWraper.savePageData(parseResult);
-//        return null;
     }
 
     private void sleep() {
