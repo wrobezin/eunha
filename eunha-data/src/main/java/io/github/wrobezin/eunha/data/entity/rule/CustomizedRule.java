@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "rule")
+@Document("rule")
 public class CustomizedRule {
     @Id
     private String id;

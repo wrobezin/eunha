@@ -2,10 +2,9 @@ package io.github.wrobezin.eunha.app.controller;
 
 import io.github.wrobezin.eunha.app.service.RuleService;
 import io.github.wrobezin.eunha.app.vo.CustomizedRuleVO;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author yuan
@@ -23,6 +22,16 @@ public class RuleController {
 
     @PostMapping
     public boolean createRule(@RequestBody CustomizedRuleVO rule) {
-        return ruleService.createRule(rule);
+        return ruleService.save(rule);
+    }
+
+    @GetMapping
+    public List<CustomizedRuleVO> queryAllRule(){
+        return ruleService.queryAll();
+    }
+
+    @GetMapping("/{id}")
+    public List<CustomizedRuleVO> getById(@PathVariable String id){
+        return ruleService.queryAll();
     }
 }

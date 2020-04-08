@@ -14,6 +14,7 @@ import java.util.List;
  */
 @Data
 public class CustomizedRuleVO {
+    private String id;
     private String name;
     private CrawlRule crawlRule;
     private List<InterestItem> interestRule;
