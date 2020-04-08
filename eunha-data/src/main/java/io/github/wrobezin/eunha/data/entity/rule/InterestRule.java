@@ -4,6 +4,7 @@ import io.github.wrobezin.eunha.data.enums.RuleItemJudgeTypeEnum;
 import io.github.wrobezin.eunha.data.enums.RuleItemLogicTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,9 +22,10 @@ import static io.github.wrobezin.eunha.data.enums.RuleItemLogicTypeEnum.OR;
  * @date 2020/3/28 20:05
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class InterestRule {
-    private List<InterestRuleItemGroup> interestRules;
+    private List<AbstractInterestRuleItem> interestRules;
 
     public static InterestRuleItemGroup group(List<? extends AbstractInterestRuleItem> ruleItems) {
         return new InterestRuleItemGroup(ruleItems);

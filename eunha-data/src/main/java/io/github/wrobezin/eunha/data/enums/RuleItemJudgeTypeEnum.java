@@ -13,22 +13,24 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RuleItemJudgeTypeEnum {
+    /** 默认 */
+    ALWAYS_TRUE(0, "永真"),
     /** 网页标题包含某个词组 */
-    TITLE_CONTAIN(2, "标题包含"),
+    TITLE_CONTAIN(1, "标题包含"),
     /** 网页标题不含某个词组 */
-    TITLE_NOT_CONTAIN(3, "标题不含"),
+    TITLE_NOT_CONTAIN(2, "标题不含"),
     /** 网页内容包含某个词组 */
-    CONTENT_CONTAIN(2, "内容包含"),
+    CONTENT_CONTAIN(3, "内容包含"),
     /** 网页内容不含某个词组 */
-    CONTENT_NOT_CONTAIN(3, "内容不含"),
+    CONTENT_NOT_CONTAIN(4, "内容不含"),
     /** 抓取时间早于或等于某个值 */
-    EARLIER_THAN(4, "早于"),
+    EARLIER_THAN(5, "早于"),
     /** 抓取时间晚于或等于某个值 */
-    LATER_THAN(5, "晚于"),
+    LATER_THAN(6, "晚于"),
     /** 页面长度大于或等于某个值 */
-    LONGER_THAN(6, "长于"),
+    LONGER_THAN(7, "长于"),
     /** 页面长度小于或等于某个值 */
-    SHORTER_THAN(7, "短于");
+    SHORTER_THAN(8, "短于");
 
     private Integer type;
     private String description;

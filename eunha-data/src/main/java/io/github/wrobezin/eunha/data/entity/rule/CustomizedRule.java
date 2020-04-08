@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +20,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(collection = "rule")
 public class CustomizedRule {
+    @Id
     private String id;
     /** 规则名 */
     private String name;
@@ -26,6 +30,7 @@ public class CustomizedRule {
     private CrawlRule crawlRule;
     /** 兴趣规则 */
     private InterestRule interestRule;
+
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

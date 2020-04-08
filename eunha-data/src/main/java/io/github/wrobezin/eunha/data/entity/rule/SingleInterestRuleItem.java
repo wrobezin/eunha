@@ -2,8 +2,7 @@ package io.github.wrobezin.eunha.data.entity.rule;
 
 import io.github.wrobezin.eunha.data.enums.RuleItemJudgeTypeEnum;
 import io.github.wrobezin.eunha.data.enums.RuleItemLogicTypeEnum;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 /**
  * 单一兴趣规则项
@@ -13,6 +12,7 @@ import lombok.EqualsAndHashCode;
  * @date 2020/3/28 20:44
  */
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class SingleInterestRuleItem extends AbstractInterestRuleItem {
     private RuleItemJudgeTypeEnum judgeType;
