@@ -26,7 +26,7 @@ public class RuleService {
     }
 
     private AbstractInterestRuleItem parseInterestItem(CustomizedRuleVO.InterestItem item) {
-        if (null == item.getSub()) {
+        if (null == item.getSub() || item.getSub().isEmpty()) {
             SingleInterestRuleItem ruleItem = new SingleInterestRuleItem();
             ruleItem.setLogicType(item.getLogic());
             ruleItem.setJudgeType(item.getType());
