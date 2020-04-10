@@ -22,12 +22,13 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public final class HttpUrlUtils {
-    private static final Pattern URL_PATTERN = Pattern.compile("^(https?)://([\\w.%!-]*)(?:[:]?([\\d]*))([\\w.%!/-]*)(?:[?]?(.*))");
+    private static final Pattern URL_PATTERN = Pattern.compile("^(https?)://([\\w.%!-]*)(?:[:]?([\\d]*))([\\w.%!/-]*)(?:[?]?(.*))(?:[#]?(.*))");
     private static final int URL_PATTERN_PROTOCOL_GROUP_INDEX = 1;
     private static final int URL_PATTERN_HOST_GROUP_INDEX = 2;
     private static final int URL_PATTERN_PORT_GROUP_INDEX = 3;
     private static final int URL_PATTERN_PATH_GROUP_INDEX = 4;
-    private static final int URL_PATTERN_PARAM_GROUP_INDEX = 5;
+    private static final int URL_PATTERN_QUERY_GROUP_INDEX = 5;
+    private static final int URL_PATTERN_FRAGMENT_GROUP_INDEX = 6;
 
     public static String urlEncode(@NotNull final String url, @NotNull final String charSet) {
         try {
@@ -70,10 +71,11 @@ public final class HttpUrlUtils {
                     String host = matcher.group(URL_PATTERN_HOST_GROUP_INDEX);
                     String port = matcher.group(URL_PATTERN_PORT_GROUP_INDEX);
                     String path = matcher.group(URL_PATTERN_PATH_GROUP_INDEX);
-                    String paramString = matcher.group(URL_PATTERN_PARAM_GROUP_INDEX);
-                    LinkedHashMap<String, String> paramMap = StringUtils.isBlank(paramString)
+                    String query = matcher.group(URL_PATTERN_QUERY_GROUP_INDEX);
+                    String fragment = matcher.group(URL_PATTERN_FRAGMENT_GROUP_INDEX);
+                    LinkedHashMap<String, String> queryMap = StringUtils.isBlank(query)
                             ? new LinkedHashMap<>(0)
-                            : Arrays.stream(paramString.split("&")).collect(
+                            : Arrays.stream(query.split("&")).collect(
                             LinkedHashMap::new,
                             (map, string) -> {
                                 String[] kv = string.split("=");
@@ -81,7 +83,15 @@ public final class HttpUrlUtils {
                             },
                             LinkedHashMap::putAll
                     );
-                    return new UrlInfo(protocal, host, StringUtils.isBlank(port) ? 80 : Integer.parseInt(port), urlDecode(path), urlDecode(paramString), paramMap);
+                    return UrlInfo.builder()
+                            .protocal(protocal)
+                            .host(host)
+                            .port(StringUtils.isBlank(port) ? 80 : Integer.parseInt(port))
+                            .path(path)
+                            .queryString(query)
+                            .queryMap(queryMap)
+                            .fragment(fragment)
+                            .build();
                 }).orElse(UrlInfo.BLANK);
     }
 
@@ -95,7 +105,8 @@ public final class HttpUrlUtils {
                 "https://t.test.com/a-b/123?fuck=shit&a=0.88&b=c",
                 "http://test.com/中文测试?中文=测试&eunha=银河",
                 "http://test.com/?没有值",
-                "http://test.com/?没有值&mmp=sb"
-        ).forEach(url -> System.out.println(JSON.toJSONString(parseUrl(url).getUrl())));
+                "http://test.com/?没有值&mmp=sb",
+                "http://test.com/?没有值&mmp=sb#aaa"
+        ).forEach(url -> System.out.println(JSON.toJSONString(parseUrl(url).getBaseUrl())));
     }
 }

@@ -27,12 +27,12 @@ public class RuleController {
 
     @GetMapping
     public List<CustomizedRuleVO> queryAllRule() {
-        return ruleService.queryAll();
+        return ruleService.queryAllVo();
     }
 
     @GetMapping("/{id}")
     public List<CustomizedRuleVO> getById(@PathVariable String id) {
-        return ruleService.queryAll();
+        return ruleService.queryAllVo();
     }
 
     @DeleteMapping("/{id}")

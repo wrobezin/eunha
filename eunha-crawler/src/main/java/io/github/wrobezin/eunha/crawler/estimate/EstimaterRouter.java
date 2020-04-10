@@ -3,8 +3,12 @@ package io.github.wrobezin.eunha.crawler.estimate;
 import io.github.wrobezin.eunha.crawler.anotation.EstimaterFor;
 import io.github.wrobezin.eunha.crawler.entity.HyperLinkToDownload;
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
+import io.github.wrobezin.eunha.data.entity.document.CompatibilityScore;
 import io.github.wrobezin.eunha.data.entity.document.HyperLink;
+import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import io.github.wrobezin.eunha.data.entity.rule.InterestRule;
+import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
+import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import io.github.wrobezin.framework.utils.spring.BeanHelper;
 import io.github.wrobezin.framework.utils.spring.PackageScanUtils;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -24,12 +28,16 @@ public class EstimaterRouter {
     private static final String PACKAGE_PATH = "io.github.wrobezin.eunha.crawler.estimate";
     private Map<Class<?>, Estimater> estimaterMap;
 
+    private static double HISTORY_SCORE_RATE = 0.4;
     private static double PARENT_PAGE_RATE = 0.3;
-    private static double LINK_SELF_RATE = 0.7;
+    private static double LINK_SELF_RATE = 0.3;
 
     private final BeanHelper beanHelper;
 
-    public EstimaterRouter(BeanHelper beanHelper) {
+    private final CompatibilityScoreMongoRepository compatibilityRepository;
+
+    public EstimaterRouter(BeanHelper beanHelper, CompatibilityScoreMongoRepository compatibilityRepository) {
+        this.compatibilityRepository = compatibilityRepository;
         this.estimaterMap = new HashMap<>(4);
         this.beanHelper = beanHelper;
         PackageScanUtils.classScan(PACKAGE_PATH)
@@ -48,7 +56,13 @@ public class EstimaterRouter {
         return estimaterMap.get(HyperLink.class).estimate(link.getLink(), interestRule.getInterestRules());
     }
 
-    public double estimate(Double pageCompatibility, HyperLinkToDownload link, InterestRule interestRule) {
-        return pageCompatibility * PARENT_PAGE_RATE + estimate(link, interestRule) * LINK_SELF_RATE;
+    public double estimate(Double pageCompatibility, HyperLinkToDownload link, CustomizedRule rule) {
+        String url = HttpUrlUtils.parseUrl(link.getLink().getUrl()).getUrlWithQuery();
+        double history = Optional.ofNullable(compatibilityRepository.findByUrlAndRuleId(url, rule.getId()))
+                .map(CompatibilityScore::getValue)
+                .orElse(0.0);
+        return history * HISTORY_SCORE_RATE
+                + pageCompatibility * PARENT_PAGE_RATE
+                + estimate(link, rule.getInterestRule()) * LINK_SELF_RATE;
     }
 }

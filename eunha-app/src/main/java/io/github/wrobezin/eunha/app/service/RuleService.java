@@ -97,8 +97,12 @@ public class RuleService {
                 .orElse(Boolean.FALSE);
     }
 
-    public List<CustomizedRuleVO> queryAll() {
-        return repository.findAll().stream()
+    public List<CustomizedRule> findAll() {
+        return repository.findAll();
+    }
+
+    public List<CustomizedRuleVO> queryAllVo() {
+        return findAll().stream()
                 .map(this::dbEntityTovo)
                 .collect(Collectors.toList());
     }

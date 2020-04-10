@@ -20,7 +20,7 @@ public class GeneralHtmlParser extends AbstractParser {
     @Override
     protected Object parseContent(UrlInfo urlInfo, Document document) {
         return OriginalDocument.builder()
-                .url(urlInfo.getUrl())
+                .url(urlInfo.getBaseUrl())
                 .title(document.title())
                 .body(document.getElementsByTag("body")
                         .get(0)

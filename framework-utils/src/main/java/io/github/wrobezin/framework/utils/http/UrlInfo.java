@@ -2,6 +2,7 @@ package io.github.wrobezin.framework.utils.http;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,8 +16,9 @@ import java.util.Map;
  * date: 2020/1/21
  */
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UrlInfo {
     @JSONField(ordinal = 1)
     private String protocal;
@@ -27,15 +29,29 @@ public class UrlInfo {
     @JSONField(ordinal = 4)
     private String path;
     @JSONField(ordinal = 5)
-    private String paramString;
+    private String queryString;
     @JSONField(ordinal = 6)
-    private Map<String, String> paramMap;
+    private Map<String, String> queryMap;
+    @JSONField(ordinal = 7)
+    private String fragment;
 
-    public String getUrl() {
+    public String getBaseUrl() {
         return getProtocal() + "://" + getHost() + ":" + getPort() + getPath();
     }
 
-    public static final UrlInfo BLANK = new UrlInfo("", "", 80, "", "", new HashMap<>(0));
+    public String getUrlWithQuery() {
+        return getProtocal() + "://" + getHost() + ":" + getPort() + getPath() + "?" + getQueryString();
+    }
+
+    public static final UrlInfo BLANK = UrlInfo.builder()
+            .protocal("")
+            .host("")
+            .port(80)
+            .path("")
+            .queryString("")
+            .queryMap(new HashMap<>(0))
+            .fragment("")
+            .build();
 
     public boolean isHttpUrl() {
         return this.getProtocal().startsWith("http");

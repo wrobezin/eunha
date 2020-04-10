@@ -9,10 +9,12 @@ import io.github.wrobezin.eunha.crawler.estimate.EstimaterRouter;
 import io.github.wrobezin.eunha.crawler.parser.ParserRouter;
 import io.github.wrobezin.eunha.crawler.queue.HyperLinkExpandQueue;
 import io.github.wrobezin.eunha.crawler.queue.MemoryHyperLinkExpandQueue;
+import io.github.wrobezin.eunha.data.entity.document.CompatibilityScore;
 import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import io.github.wrobezin.eunha.data.entity.rule.CrawlRule;
 import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import io.github.wrobezin.eunha.data.entity.rule.InterestRule;
+import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -45,12 +47,15 @@ public class PageCrawler implements Crawler {
 
     private final EstimaterRouter estimaterRouter;
 
+    private final CompatibilityScoreMongoRepository compatibilityRepository;
+
     private final Integer SLEEP_TIME = 1000;
 
-    public PageCrawler(ParserRouter parserRouter, DataOpertorWraper dataOpertorWraper, EstimaterRouter estimaterRouter) {
+    public PageCrawler(ParserRouter parserRouter, DataOpertorWraper dataOpertorWraper, EstimaterRouter estimaterRouter, CompatibilityScoreMongoRepository compatibilityRepository) {
         this.parserRouter = parserRouter;
         this.dataOpertorWraper = dataOpertorWraper;
         this.estimaterRouter = estimaterRouter;
+        this.compatibilityRepository = compatibilityRepository;
     }
 
     @Override
@@ -68,27 +73,30 @@ public class PageCrawler implements Crawler {
                 continue;
             }
             try {
-                String urlDownloading = linkToDownload.getLink().getUrl();
-                if (visited.contains(urlDownloading)) {
+                // 使用带query而不带fragment的URL进行去重
+                String urlToDonwload = HttpUrlUtils.parseUrl(linkToDownload.getLink().getUrl()).getUrlWithQuery();
+                if (visited.contains(urlToDonwload)) {
                     continue;
                 }
-                log.info("下载链接：{} {}", linkToDownload.getLink().getAnchorText(), urlDownloading);
+                log.info("下载链接：{} {}", linkToDownload.getLink().getAnchorText(), urlToDonwload);
                 // 下载页面
                 DownloadResult downloadResult = downloadPage(linkToDownload.getLink());
-                visited.add(urlDownloading);
+                visited.add(urlToDonwload);
                 // 调用解析器解析页面
                 ParseResult parseResult = parserRouter.parse(downloadResult);
                 // 处理解析结果并将最终爬取结果添加到爬取结果列表
                 crawlResults.add(handleParseResult(parseResult));
                 // 评估页面与兴趣规则之间的匹配度
                 double compatibility = estimaterRouter.estimate(parseResult, interestRule);
+                // 保存最新匹配度
+                compatibilityRepository.save(new CompatibilityScore(urlToDonwload, customizedRule.getId(), compatibility));
                 // URL扩展
                 if (crawlRule.getExpandable()) {
                     parseResult.getLinks().stream()
                             .filter(url -> crawlRule.getExpandToOtherSite() || HttpUrlUtils.hasSameHost(url.getUrl(), linkToDownload.getLink().getUrl()))
                             .map(expandedLink -> new HyperLinkToDownload(expandedLink, linkToDownload, parseResult, interestRule))
                             .forEach(expandedLink -> {
-                                expandedLink.setScore(estimaterRouter.estimate(compatibility, expandedLink, interestRule));
+                                expandedLink.setScore(estimaterRouter.estimate(compatibility, expandedLink, customizedRule));
                                 queue.offer(expandedLink);
                             });
                 }

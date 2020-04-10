@@ -55,6 +55,6 @@ public class OriginalDocument {
             .url("")
             .title("")
             .body("")
-            .fingerPrint(EntityHashUtils.generateOriginalFingerPrint(new OriginalDocument()))
+            .fingerPrint(EntityHashUtils.generateOriginalDocumentFingerPrint(new OriginalDocument()))
             .build();
 }

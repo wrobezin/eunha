@@ -48,7 +48,7 @@ public class Article {
     private String author;
 
     /** 分类，一篇文章可能属于多个类别 */
-    @Field
+    @Field(type = FieldType.Object)
     private List<Integer> categories;
 
     @Field(type = FieldType.Text, analyzer = "ik_max_word")

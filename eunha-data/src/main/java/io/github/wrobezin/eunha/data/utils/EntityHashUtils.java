@@ -30,7 +30,7 @@ public final class EntityHashUtils {
                 .map(DigestUtils::sha1Hex).collect(Collectors.joining()));
     }
 
-    public static String generateOriginalFingerPrint(OriginalDocument document) {
+    public static String generateOriginalDocumentFingerPrint(OriginalDocument document) {
         return DigestUtils.sha256Hex(Stream.of(
                 document.getTitle(),
                 document.getBody())
@@ -38,7 +38,11 @@ public final class EntityHashUtils {
                 .map(DigestUtils::sha1Hex).collect(Collectors.joining()));
     }
 
-    public static String generateMongoId(String fingerPrint, Integer version, LocalDateTime updateTime) {
+    public static String generateContentMongoId(String fingerPrint, Integer version, LocalDateTime updateTime) {
         return DigestUtils.sha256Hex(fingerPrint + version + updateTime);
+    }
+
+    public static String generateCompatibilityMongoId(String url, String ruleId) {
+        return DigestUtils.sha256Hex(url + ruleId);
     }
 }
