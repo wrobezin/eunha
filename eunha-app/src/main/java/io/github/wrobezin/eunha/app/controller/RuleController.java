@@ -21,17 +21,22 @@ public class RuleController {
     }
 
     @PostMapping
-    public boolean createRule(@RequestBody CustomizedRuleVO rule) {
+    public boolean saveRule(@RequestBody CustomizedRuleVO rule) {
         return ruleService.save(rule);
     }
 
     @GetMapping
-    public List<CustomizedRuleVO> queryAllRule(){
+    public List<CustomizedRuleVO> queryAllRule() {
         return ruleService.queryAll();
     }
 
     @GetMapping("/{id}")
-    public List<CustomizedRuleVO> getById(@PathVariable String id){
+    public List<CustomizedRuleVO> getById(@PathVariable String id) {
         return ruleService.queryAll();
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteRule(@PathVariable String id) {
+        return ruleService.remove(id);
     }
 }

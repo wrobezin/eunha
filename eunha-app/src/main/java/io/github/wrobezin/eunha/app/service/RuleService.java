@@ -61,6 +61,8 @@ public class RuleService {
         vo.setId(rule.getId());
         vo.setCrawlRule(rule.getCrawlRule());
         vo.setName(rule.getName());
+        vo.setCreateTime(rule.getCreateTime());
+        vo.setUpdateTime(rule.getUpdateTime());
         vo.setInterestRule(rule.getInterestRule()
                 .getInterestRules()
                 .stream()
@@ -82,7 +84,7 @@ public class RuleService {
                 .name(vo.getName())
                 .crawlRule(vo.getCrawlRule())
                 .interestRule(new InterestRule(groups))
-                .createTime(now)
+                .createTime(Optional.ofNullable(vo.getCreateTime()).orElse(now))
                 .updateTime(now)
                 .build();
     }
@@ -105,5 +107,13 @@ public class RuleService {
         return repository.findById(id)
                 .map(this::dbEntityTovo)
                 .orElse(null);
+    }
+
+    public boolean remove(String id) {
+        boolean exists = repository.findById(id).isPresent();
+        if (exists) {
+            repository.deleteById(id);
+        }
+        return exists;
     }
 }

@@ -5,6 +5,7 @@ import io.github.wrobezin.eunha.data.enums.RuleItemJudgeTypeEnum;
 import io.github.wrobezin.eunha.data.enums.RuleItemLogicTypeEnum;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -18,6 +19,8 @@ public class CustomizedRuleVO {
     private String name;
     private CrawlRule crawlRule;
     private List<InterestItem> interestRule;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 
     @Data
     public static class InterestItem {
