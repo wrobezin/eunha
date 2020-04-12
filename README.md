@@ -5,7 +5,6 @@
 目前拟用技术：
 + SpringBoot
 + Elasticsearch
-+ Redis
-+ Vue
++ MongoDB
 
-还是 Java 香。
+[前端](https://github.com/wrobezin/eunha-front)套个 Vue 后台模板了事。
