@@ -18,4 +18,21 @@ public interface ContentDataOperator {
      * @return 爬取结果
      */
     CrawlResult savePageData(ParseResult parseResult);
+
+
+    /**
+     * 通过id从ES获取页面内容
+     *
+     * @param id id
+     * @return 页面内容
+     */
+    Object getContentFromEsById(String id);
+
+    /**
+     * 通过url从ES获取页面内容
+     *
+     * @param url url
+     * @return 页面内容
+     */
+    Object getContentFromEsByUrl(String url);
 }

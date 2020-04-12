@@ -19,8 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CrawlResult {
-    private String pageId;
-    private String contentEsId;
+    private String esId;
     private String contentDbId;
     private String url;
     private String contentType;
@@ -30,8 +29,7 @@ public class CrawlResult {
     private LocalDateTime finishTime;
 
     public static final CrawlResult NO_RESULT = CrawlResult.builder()
-            .pageId("")
-            .contentEsId("")
+            .esId("")
             .contentDbId("")
             .url("")
             .contentType("")

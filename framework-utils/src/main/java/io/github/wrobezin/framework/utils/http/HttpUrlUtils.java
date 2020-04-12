@@ -107,6 +107,6 @@ public final class HttpUrlUtils {
                 "http://test.com/?没有值",
                 "http://test.com/?没有值&mmp=sb",
                 "http://test.com/?没有值&mmp=sb#aaa"
-        ).forEach(url -> System.out.println(JSON.toJSONString(parseUrl(url).getBaseUrl())));
+        ).forEach(url -> System.out.println(JSON.toJSONString(parseUrl(url).getUrlWithQuery())));
     }
 }

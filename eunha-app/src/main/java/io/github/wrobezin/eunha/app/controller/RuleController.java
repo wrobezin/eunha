@@ -2,6 +2,7 @@ package io.github.wrobezin.eunha.app.controller;
 
 import io.github.wrobezin.eunha.app.service.RuleService;
 import io.github.wrobezin.eunha.app.vo.CustomizedRuleVO;
+import io.github.wrobezin.eunha.data.entity.document.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,5 +39,10 @@ public class RuleController {
     @DeleteMapping("/{id}")
     public boolean deleteRule(@PathVariable String id) {
         return ruleService.remove(id);
+    }
+
+    @GetMapping("/page/{id}")
+    public List<Page> getmatchedPages(@PathVariable String id){
+        return ruleService.getAllPageMatching(id);
     }
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,11 +37,16 @@ public class UrlInfo {
     private String fragment;
 
     public String getBaseUrl() {
-        return getProtocal() + "://" + getHost() + ":" + getPort() + getPath();
+        return HttpUrlUtils.urlDecode(getProtocal() + "://" + getHost() + ":" + getPort() + getPath());
     }
 
     public String getUrlWithQuery() {
-        return getProtocal() + "://" + getHost() + ":" + getPort() + getPath() + "?" + getQueryString();
+        String baseUrl = getBaseUrl();
+        String queryString = getQueryString();
+        if (!StringUtils.isBlank(queryString)) {
+            baseUrl += HttpUrlUtils.urlDecode(queryString);
+        }
+        return baseUrl;
     }
 
     public static final UrlInfo BLANK = UrlInfo.builder()

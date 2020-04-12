@@ -49,7 +49,7 @@ public class PageCrawler implements Crawler {
 
     private final CompatibilityScoreMongoRepository compatibilityRepository;
 
-    private final Integer SLEEP_TIME = 1000;
+    private final Integer SLEEP_TIME = 700;
 
     public PageCrawler(ParserRouter parserRouter, DataOpertorWraper dataOpertorWraper, EstimaterRouter estimaterRouter, CompatibilityScoreMongoRepository compatibilityRepository) {
         this.parserRouter = parserRouter;

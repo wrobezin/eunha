@@ -37,6 +37,7 @@ public abstract class AbstractParser {
         parseResult.setContent(parseContent(urlInfo, document));
         parseResult.setContentType(getContentType());
         parseResult.setLinks(hyperLinks);
+        parseResult.setTitle(document.title());
         return parseResult;
     }
 

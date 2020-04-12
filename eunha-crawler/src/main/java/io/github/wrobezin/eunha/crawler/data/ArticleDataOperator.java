@@ -27,4 +27,14 @@ public class ArticleDataOperator implements ContentDataOperator {
     public CrawlResult savePageData(ParseResult parseResult) {
         return null;
     }
+
+    @Override
+    public Object getContentFromEsById(String id) {
+        return null;
+    }
+
+    @Override
+    public Object getContentFromEsByUrl(String url) {
+        return null;
+    }
 }

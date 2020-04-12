@@ -34,7 +34,6 @@ public class OriginalDocumentDataOperator implements ContentDataOperator {
         OriginalDocument documentInMongo = mongoRepository.findFirstByUrlOrderByVersionDesc(document.getUrl());
         String fingerPrint = EntityHashUtils.generateOriginalDocumentFingerPrint(document);
         String esId = EntityHashUtils.generateUrlHash(document.getUrl());
-        crawlResult.setContentEsId(esId);
         int dbVersion = Optional.ofNullable(documentInMongo).map(OriginalDocument::getVersion).orElse(0);
         boolean newPage = documentInMongo == null;
         crawlResult.setNewPage(newPage);
@@ -61,5 +60,15 @@ public class OriginalDocumentDataOperator implements ContentDataOperator {
         crawlResult.setContentDbId(documentInMongo.getId());
         crawlResult.setFinishTime(LocalDateTime.now());
         return crawlResult;
+    }
+
+    @Override
+    public Object getContentFromEsById(String id) {
+        return esRepository.findById(id).orElse(OriginalDocument.BLANK);
+    }
+
+    @Override
+    public Object getContentFromEsByUrl(String url) {
+        return esRepository.findByUrl(url);
     }
 }

@@ -37,11 +37,11 @@ public class Page {
     @Field(type = FieldType.Keyword)
     private String url;
 
-    @Field(type = FieldType.Keyword)
-    private String contentType;
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    private String title;
 
     @Field(type = FieldType.Keyword)
-    private String contentId;
+    private String contentType;
 
     @Field
     private List<HyperLink> hyperLinks;

@@ -1,13 +1,16 @@
 package io.github.wrobezin.eunha.app;
 
+import io.github.wrobezin.eunha.app.service.RuleService;
 import io.github.wrobezin.eunha.crawler.PageCrawler;
+import io.github.wrobezin.eunha.crawler.data.DataOpertorWraper;
 import io.github.wrobezin.eunha.crawler.estimate.OringinalDocumentEstimater;
 import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
-import io.github.wrobezin.eunha.data.entity.rule.CrawlRule;
+import io.github.wrobezin.eunha.data.entity.document.Page;
 import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import io.github.wrobezin.eunha.data.entity.rule.InterestRule;
 import io.github.wrobezin.eunha.data.entity.rule.SingleInterestRuleItem;
 import io.github.wrobezin.eunha.data.enums.RuleItemJudgeTypeEnum;
+import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.OriginalDocumentMongoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author yuan
@@ -33,19 +37,19 @@ class EunhaApplicationTest {
     @Autowired
     private OriginalDocumentMongoRepository mongoRepository;
 
+    @Autowired
+    private RuleService ruleService;
+
+    @Autowired
+    private PageElasticsearchRepository pageRepository;
+
+    @Autowired
+    private DataOpertorWraper dataOpertorWraper;
+
     @Test
     void testCrawl() {
-        CrawlRule crawlRule = CrawlRule.builder().seedUrl("http://jiaren.org/category/d_human/")
-                .expandable(true)
-                .expandToOtherSite(false)
-                .maxExpandDepth(0).build();
-        InterestRule interestRule = InterestRule
-                .first(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "早安心语")
-                .or(RuleItemJudgeTypeEnum.TITLE_CONTAIN, "晚安心语");
-        CustomizedRule customizedRule = CustomizedRule.builder()
-                .crawlRule(crawlRule)
-                .interestRule(interestRule)
-                .build();
+        CustomizedRule customizedRule = ruleService.findAll().get(0);
+        customizedRule.getCrawlRule().setMaxExpandDepth(1);
         System.out.println(crawler.crawl(customizedRule));
     }
 
@@ -157,5 +161,17 @@ class EunhaApplicationTest {
         System.out.println(documentEstimater.estimate(document35, rule3.getInterestRules()));
         System.out.println(documentEstimater.estimate(document36, rule3.getInterestRules()));
         System.out.println("---------------------------------------");
+    }
+
+    @Test
+    void temp() {
+        String ruleId = ruleService.findAll().get(0).getId();
+        List<Page> allPageSuite = ruleService.getAllPageMatching(ruleId);
+        System.out.println(allPageSuite.size());
+    }
+
+    @Test
+    void temp1() {
+        System.out.println(dataOpertorWraper.getContent("OriginalDocument", "b13a13f1e0e1deb7009f5a954f037194d84a936fe0cfd051e7cbdaa66cea55d4"));
     }
 }

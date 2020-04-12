@@ -26,7 +26,7 @@ import java.util.Optional;
 public class DataOpertorWraper {
     private static final String PACKAGE_PATH = "io.github.wrobezin.eunha.crawler.data";
 
-    private Map<Class<?>, ContentDataOperator> contentDataOperatorMap;
+    private Map<String, ContentDataOperator> contentDataOperatorMap;
 
     private final PageElasticsearchRepository pageRepository;
 
@@ -41,16 +41,16 @@ public class DataOpertorWraper {
                 .filter(c -> c.isAnnotationPresent(DataOperatorFor.class))
                 .forEach(c -> Optional.ofNullable(AnnotationUtils.findAnnotation(c, DataOperatorFor.class))
                         .map(DataOperatorFor::entityType)
-                        .ifPresent(entityType -> contentDataOperatorMap.put(entityType, (ContentDataOperator) beanHelper.getBean(c))));
+                        .ifPresent(entityType -> contentDataOperatorMap.put(entityType.getSimpleName(), (ContentDataOperator) beanHelper.getBean(c))));
     }
 
     public CrawlResult savePageData(ParseResult parseResult) {
-        CrawlResult crawlResult = Optional.ofNullable(contentDataOperatorMap.get(parseResult.getContentType()))
+        CrawlResult crawlResult = Optional.ofNullable(contentDataOperatorMap.get(parseResult.getContentType().getSimpleName()))
                 .map(operator -> operator.savePageData(parseResult))
                 .orElse(CrawlResult.NO_RESULT);
         String url = crawlResult.getUrl();
         String pageId = EntityHashUtils.generateUrlHash(url);
-        crawlResult.setPageId(pageId);
+        crawlResult.setEsId(pageId);
         if (crawlResult.getUpdated()) {
             Page page = pageRepository.findById(pageId)
                     .orElse(Page.builder()
@@ -59,11 +59,17 @@ public class DataOpertorWraper {
                             .url(url)
                             .build());
             page.setHyperLinks(parseResult.getLinks());
-            page.setContentId(crawlResult.getContentEsId());
             page.setContentType(crawlResult.getContentType());
             page.setUpdateTime(LocalDateTime.now());
+            page.setTitle(parseResult.getTitle());
             pageRepository.save(page);
         }
         return crawlResult;
+    }
+
+    public Object getContent(String contentType, String id) {
+        return Optional.ofNullable(contentDataOperatorMap.get(contentType))
+                .map(operator -> operator.getContentFromEsById(id))
+                .orElse(null);
     }
 }

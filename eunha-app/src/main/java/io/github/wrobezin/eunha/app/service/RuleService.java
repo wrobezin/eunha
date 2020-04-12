@@ -1,9 +1,14 @@
 package io.github.wrobezin.eunha.app.service;
 
 import io.github.wrobezin.eunha.app.vo.CustomizedRuleVO;
+import io.github.wrobezin.eunha.data.entity.document.CompatibilityScore;
+import io.github.wrobezin.eunha.data.entity.document.Page;
 import io.github.wrobezin.eunha.data.entity.rule.*;
+import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchRepository;
+import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.CustomizedRuleMongoRepository;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,8 +26,14 @@ import java.util.stream.Collectors;
 public class RuleService {
     private final CustomizedRuleMongoRepository repository;
 
-    public RuleService(CustomizedRuleMongoRepository repository) {
+    private final CompatibilityScoreMongoRepository compatibilityRepository;
+
+    private final PageElasticsearchRepository pageRepository;
+
+    public RuleService(CustomizedRuleMongoRepository repository, CompatibilityScoreMongoRepository compatibilityRepository, PageElasticsearchRepository pageRepository) {
         this.repository = repository;
+        this.compatibilityRepository = compatibilityRepository;
+        this.pageRepository = pageRepository;
     }
 
     private AbstractInterestRuleItem parseInterestItem(CustomizedRuleVO.InterestItem item) {
@@ -119,5 +130,14 @@ public class RuleService {
             repository.deleteById(id);
         }
         return exists;
+    }
+
+    public List<Page> getAllPageMatching(String ruleId) {
+        return compatibilityRepository.findAllByRuleIdAndValueGreaterThanEqual(ruleId, 1.0)
+                .stream()
+                .map(CompatibilityScore::getUrl)
+                .map(QueryParser::escape)
+                .map(pageRepository::findByUrl)
+                .collect(Collectors.toList());
     }
 }
