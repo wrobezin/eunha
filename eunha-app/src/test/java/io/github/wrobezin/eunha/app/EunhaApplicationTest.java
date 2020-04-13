@@ -49,7 +49,7 @@ class EunhaApplicationTest {
     @Test
     void testCrawl() {
         CustomizedRule customizedRule = ruleService.findAll().get(0);
-        customizedRule.getCrawlRule().setMaxExpandDepth(1);
+        customizedRule.getCrawlRule().setMaxExpandDepth(2);
         System.out.println(crawler.crawl(customizedRule));
     }
 
@@ -172,6 +172,14 @@ class EunhaApplicationTest {
 
     @Test
     void temp1() {
-        System.out.println(dataOpertorWraper.getContent("OriginalDocument", "b13a13f1e0e1deb7009f5a954f037194d84a936fe0cfd051e7cbdaa66cea55d4"));
+        dataOpertorWraper.searchContent("武汉")
+                .forEach(obj->{
+                    if(obj instanceof OriginalDocument){
+                        System.out.println(((OriginalDocument) obj).getTitle());
+                        System.out.println(((OriginalDocument) obj).getUrl());
+//                        System.out.println(((OriginalDocument) obj).getBody());
+                        System.out.println("----------------------------------");
+                    }
+                });
     }
 }

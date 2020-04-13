@@ -37,14 +37,14 @@ public class UrlInfo {
     private String fragment;
 
     public String getBaseUrl() {
-        return HttpUrlUtils.urlDecode(getProtocal() + "://" + getHost() + ":" + getPort() + getPath());
+        return getProtocal() + "://" + getHost() + ":" + getPort() + getPath();
     }
 
     public String getUrlWithQuery() {
         String baseUrl = getBaseUrl();
         String queryString = getQueryString();
         if (!StringUtils.isBlank(queryString)) {
-            baseUrl += HttpUrlUtils.urlDecode(queryString);
+            baseUrl += "?" + queryString;
         }
         return baseUrl;
     }

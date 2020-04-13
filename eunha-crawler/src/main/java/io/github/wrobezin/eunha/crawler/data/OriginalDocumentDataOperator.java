@@ -7,8 +7,12 @@ import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.OriginalDocumentElasticsearchRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.OriginalDocumentMongoRepository;
 import io.github.wrobezin.eunha.data.utils.EntityHashUtils;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -70,5 +74,15 @@ public class OriginalDocumentDataOperator implements ContentDataOperator {
     @Override
     public Object getContentFromEsByUrl(String url) {
         return esRepository.findByUrl(url);
+    }
+
+    @Override
+    public List<?> searchContent(String keyword) {
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        queryBuilder.withQuery(QueryBuilders.boolQuery()
+                .should(QueryBuilders.matchQuery("title", keyword))
+                .should(QueryBuilders.matchQuery("body", keyword)));
+        Page<OriginalDocument> documents = esRepository.search(queryBuilder.build());
+        return documents.toList();
     }
 }

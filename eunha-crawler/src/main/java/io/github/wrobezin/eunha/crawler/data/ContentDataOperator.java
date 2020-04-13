@@ -3,6 +3,8 @@ package io.github.wrobezin.eunha.crawler.data;
 import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
 
+import java.util.List;
+
 /**
  * @author yuan
  * @version 1.0
@@ -35,4 +37,12 @@ public interface ContentDataOperator {
      * @return 页面内容
      */
     Object getContentFromEsByUrl(String url);
+
+    /**
+     * 根据关键词搜索页面内容
+     *
+     * @param keyword 关键词
+     * @return 页面内容列表
+     */
+    List<?> searchContent(String keyword);
 }

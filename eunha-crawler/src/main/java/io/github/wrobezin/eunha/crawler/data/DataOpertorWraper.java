@@ -13,9 +13,8 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author yuan
@@ -71,5 +70,12 @@ public class DataOpertorWraper {
         return Optional.ofNullable(contentDataOperatorMap.get(contentType))
                 .map(operator -> operator.getContentFromEsById(id))
                 .orElse(null);
+    }
+
+    public List<?> searchContent(String keyword) {
+        return contentDataOperatorMap.values().stream()
+                .map(operator -> operator.searchContent(keyword))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 }

@@ -3,6 +3,8 @@ package io.github.wrobezin.eunha.crawler.parser;
 import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import org.jsoup.nodes.Document;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -17,16 +19,18 @@ import java.util.stream.Collectors;
  */
 @Component
 public class GeneralHtmlParser extends AbstractParser {
+    private static final Cleaner HTML_CLEANER = new Cleaner(Whitelist.relaxed());
+
     @Override
     protected Object parseContent(UrlInfo urlInfo, Document document) {
+        String title = document.title();
+        document = HTML_CLEANER.clean(document);
         return OriginalDocument.builder()
                 .url(urlInfo.getBaseUrl())
-                .title(document.title())
-                .body(document.getElementsByTag("body")
-                        .get(0)
+                .title(title)
+                .body(document.body()
                         .children()
                         .stream()
-                        .filter(tag -> !"script".equals(tag.tagName()))
                         .map(Objects::toString)
                         .collect(Collectors.joining()))
                 .build();

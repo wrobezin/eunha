@@ -7,6 +7,9 @@ import io.github.wrobezin.eunha.data.entity.document.Article;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.ArticleElasticsearchRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.ArticleMongoRepository;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author yuan
  * @version 1.0
@@ -36,5 +39,10 @@ public class ArticleDataOperator implements ContentDataOperator {
     @Override
     public Object getContentFromEsByUrl(String url) {
         return null;
+    }
+
+    @Override
+    public List<?> searchContent(String keyword) {
+        return Collections.emptyList();
     }
 }
