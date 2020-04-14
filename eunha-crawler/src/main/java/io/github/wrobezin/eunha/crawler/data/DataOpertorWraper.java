@@ -72,9 +72,9 @@ public class DataOpertorWraper {
                 .orElse(null);
     }
 
-    public List<?> searchContent(String keyword) {
+    public List<?> searchContent(String keyword,int page,int pageSize) {
         return contentDataOperatorMap.values().stream()
-                .map(operator -> operator.searchContent(keyword))
+                .map(operator -> operator.searchContent(keyword,page,pageSize))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }

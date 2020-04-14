@@ -42,7 +42,7 @@ public class ArticleDataOperator implements ContentDataOperator {
     }
 
     @Override
-    public List<?> searchContent(String keyword) {
+    public List<?> searchContent(String keyword, int page, int pageSize) {
         return Collections.emptyList();
     }
 }

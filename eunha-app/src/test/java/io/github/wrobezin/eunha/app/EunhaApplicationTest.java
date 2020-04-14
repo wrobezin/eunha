@@ -172,9 +172,9 @@ class EunhaApplicationTest {
 
     @Test
     void temp1() {
-        dataOpertorWraper.searchContent("武汉")
-                .forEach(obj->{
-                    if(obj instanceof OriginalDocument){
+        dataOpertorWraper.searchContent("心语", 0, 100)
+                .forEach(obj -> {
+                    if (obj instanceof OriginalDocument) {
                         System.out.println(((OriginalDocument) obj).getTitle());
                         System.out.println(((OriginalDocument) obj).getUrl());
 //                        System.out.println(((OriginalDocument) obj).getBody());

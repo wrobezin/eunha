@@ -41,8 +41,10 @@ public interface ContentDataOperator {
     /**
      * 根据关键词搜索页面内容
      *
-     * @param keyword 关键词
+     * @param keyword  关键词
+     * @param page     页
+     * @param pageSize 页大小
      * @return 页面内容列表
      */
-    List<?> searchContent(String keyword);
+    List<?> searchContent(String keyword, int page, int pageSize);
 }
