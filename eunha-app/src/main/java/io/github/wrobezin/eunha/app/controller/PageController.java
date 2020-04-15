@@ -1,9 +1,12 @@
 package io.github.wrobezin.eunha.app.controller;
 
-import io.github.wrobezin.eunha.crawler.data.DataOpertorWraper;
+import io.github.wrobezin.eunha.app.service.PageService;
+import io.github.wrobezin.eunha.data.entity.document.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author yuan
@@ -13,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/page")
 public class PageController {
-    private final DataOpertorWraper dataOpertorWraper;
+    private final PageService pageService;
 
-    public PageController(DataOpertorWraper dataOpertorWraper) {
-        this.dataOpertorWraper = dataOpertorWraper;
+    public PageController(PageService pageService) {
+        this.pageService = pageService;
     }
 
-    @GetMapping("/content")
-    public Object getContent(String contentType, String id) {
-        return dataOpertorWraper.getContent(contentType, id);
+    @GetMapping("/rule")
+    public List<Page> getRuleMatchedPages(String ruleId,Integer pageIndex,Integer pageSize){
+        return pageService.getMatchingRule(ruleId,pageIndex,pageSize);
     }
 }

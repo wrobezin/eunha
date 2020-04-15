@@ -1,12 +1,9 @@
 package io.github.wrobezin.eunha.crawler;
 
-import io.github.wrobezin.eunha.crawler.data.DataOpertorWraper;
 import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
 import io.github.wrobezin.eunha.crawler.entity.DownloadResult;
 import io.github.wrobezin.eunha.crawler.entity.HyperLinkToDownload;
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
-import io.github.wrobezin.eunha.crawler.estimate.EstimaterRouter;
-import io.github.wrobezin.eunha.crawler.parser.ParserRouter;
 import io.github.wrobezin.eunha.crawler.queue.HyperLinkExpandQueue;
 import io.github.wrobezin.eunha.crawler.queue.MemoryHyperLinkExpandQueue;
 import io.github.wrobezin.eunha.data.entity.document.CompatibilityScore;
@@ -40,22 +37,18 @@ import java.util.concurrent.TimeUnit;
 public class PageCrawler implements Crawler {
     // ----------------------------------------工作逻辑相关----------------------------------------
     private HyperLinkExpandQueue queue = new MemoryHyperLinkExpandQueue((l1, l2) -> l2.getScore().compareTo(l1.getScore()));
-
-    private final DataOpertorWraper dataOpertorWraper;
-
-    private final ParserRouter parserRouter;
-
-    private final EstimaterRouter estimaterRouter;
-
-    private final CompatibilityScoreMongoRepository compatibilityRepository;
-
     private final Integer SLEEP_TIME = 700;
 
-    public PageCrawler(ParserRouter parserRouter, DataOpertorWraper dataOpertorWraper, EstimaterRouter estimaterRouter, CompatibilityScoreMongoRepository compatibilityRepository) {
-        this.parserRouter = parserRouter;
-        this.dataOpertorWraper = dataOpertorWraper;
-        this.estimaterRouter = estimaterRouter;
+    private final Estimater estimater;
+    private final CompatibilityScoreMongoRepository compatibilityRepository;
+    private final GeneralHtmlParser parser;
+    private final DataOpertor dataOpertor;
+
+    public PageCrawler(Estimater estimater, CompatibilityScoreMongoRepository compatibilityRepository, GeneralHtmlParser parser, DataOpertor dataOpertor) {
+        this.estimater = estimater;
         this.compatibilityRepository = compatibilityRepository;
+        this.parser = parser;
+        this.dataOpertor = dataOpertor;
     }
 
     @Override
@@ -83,11 +76,12 @@ public class PageCrawler implements Crawler {
                 DownloadResult downloadResult = downloadPage(linkToDownload.getLink());
                 visited.add(urlToDonwload);
                 // 调用解析器解析页面
-                ParseResult parseResult = parserRouter.parse(downloadResult);
+                ParseResult parseResult = parser.parse(downloadResult);
                 // 处理解析结果并将最终爬取结果添加到爬取结果列表
-                crawlResults.add(handleParseResult(parseResult));
+                CrawlResult crawlResult = handleParseResult(parseResult);
+                crawlResults.add(crawlResult);
                 // 评估页面与兴趣规则之间的匹配度
-                double compatibility = estimaterRouter.estimate(parseResult, interestRule);
+                double compatibility = estimater.estimate(crawlResult.getPageInDb(), interestRule);
                 // 保存最新匹配度
                 compatibilityRepository.save(new CompatibilityScore(urlToDonwload, customizedRule.getId(), compatibility));
                 // URL扩展
@@ -96,7 +90,7 @@ public class PageCrawler implements Crawler {
                             .filter(url -> crawlRule.getExpandToOtherSite() || HttpUrlUtils.hasSameHost(url.getUrl(), linkToDownload.getLink().getUrl()))
                             .map(expandedLink -> new HyperLinkToDownload(expandedLink, linkToDownload, parseResult, interestRule))
                             .forEach(expandedLink -> {
-                                expandedLink.setScore(estimaterRouter.estimate(compatibility, expandedLink, customizedRule));
+                                expandedLink.setScore(estimater.estimate(compatibility, expandedLink, customizedRule));
                                 queue.offer(expandedLink);
                             });
                 }
@@ -122,7 +116,7 @@ public class PageCrawler implements Crawler {
      * @return 最终爬取结果
      */
     private CrawlResult handleParseResult(ParseResult parseResult) {
-        return dataOpertorWraper.savePageData(parseResult);
+        return dataOpertor.savePageData(parseResult);
     }
 
     private void sleep() {

@@ -1,14 +1,8 @@
 package io.github.wrobezin.eunha.data.utils;
 
-import io.github.wrobezin.eunha.data.entity.document.Article;
-import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author yuan
@@ -20,29 +14,15 @@ public final class EntityHashUtils {
         return DigestUtils.sha256Hex(url);
     }
 
-    public static String generateArticleFingerPrint(Article article) {
-        return DigestUtils.sha256Hex(Stream.of(
-                article.getAuthor(),
-                article.getTitle(),
-                article.getBody(),
-                article.getPublishTime())
-                .map(obj -> Optional.ofNullable(obj).map(Objects::toString).orElse(""))
-                .map(DigestUtils::sha1Hex).collect(Collectors.joining()));
+    public static String generatePageFingerPrint(String title, String body) {
+        return DigestUtils.sha256Hex(title + body);
     }
 
-    public static String generateOriginalDocumentFingerPrint(OriginalDocument document) {
-        return DigestUtils.sha256Hex(Stream.of(
-                document.getTitle(),
-                document.getBody())
-                .map(str -> Optional.ofNullable(str).orElse(""))
-                .map(DigestUtils::sha1Hex).collect(Collectors.joining()));
-    }
-
-    public static String generateContentMongoId(String fingerPrint, Integer version, LocalDateTime updateTime) {
+    public static String generateMongoId(String fingerPrint, Integer version, LocalDateTime updateTime) {
         return DigestUtils.sha256Hex(fingerPrint + version + updateTime);
     }
 
-    public static String generateCompatibilityMongoId(String url, String ruleId) {
+    public static String generateCompatibilityId(String url, String ruleId) {
         return DigestUtils.sha256Hex(url + ruleId);
     }
 }

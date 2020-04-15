@@ -9,12 +9,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,7 +26,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "eunha-page", shards = 1)
+@org.springframework.data.mongodb.core.mapping.Document("page")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "eunha", shards = 1)
 public class Page {
     @Id
     private String id;
@@ -40,8 +41,13 @@ public class Page {
     @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String title;
 
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    private String body;
+
     @Field(type = FieldType.Keyword)
-    private String contentType;
+    private String fingerPrint;
+
+    private Integer version;
 
     @Field
     private List<HyperLink> hyperLinks;
@@ -51,4 +57,15 @@ public class Page {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updateTime;
+
+    public static final Page BLANK = Page.builder()
+            .id("")
+            .url("")
+            .title("")
+            .body("")
+            .fingerPrint("")
+            .version(0)
+            .host("")
+            .hyperLinks(Collections.emptyList())
+            .build();
 }

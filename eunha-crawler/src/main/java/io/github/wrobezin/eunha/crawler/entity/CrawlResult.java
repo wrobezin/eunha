@@ -1,5 +1,6 @@
 package io.github.wrobezin.eunha.crawler.entity;
 
+import io.github.wrobezin.eunha.data.entity.document.Page;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,20 +20,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CrawlResult {
-    private String esId;
-    private String contentDbId;
     private String url;
-    private String contentType;
     private Boolean newPage;
     private Boolean updated;
     private Integer version;
     private LocalDateTime finishTime;
+    private Page pageInDb;
 
-    public static final CrawlResult NO_RESULT = CrawlResult.builder()
-            .esId("")
-            .contentDbId("")
+    public static final CrawlResult BLANK = CrawlResult.builder()
             .url("")
-            .contentType("")
             .newPage(false)
             .updated(false)
             .version(-1)

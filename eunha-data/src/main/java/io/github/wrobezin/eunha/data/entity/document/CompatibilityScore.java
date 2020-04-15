@@ -27,6 +27,6 @@ public class CompatibilityScore {
         this.url = url;
         this.ruleId = ruleId;
         this.value = value;
-        this.id = EntityHashUtils.generateCompatibilityMongoId(url, ruleId);
+        this.id = EntityHashUtils.generateCompatibilityId(url, ruleId);
     }
 }

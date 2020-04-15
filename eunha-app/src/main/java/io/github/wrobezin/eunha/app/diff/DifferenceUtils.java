@@ -3,7 +3,7 @@ package io.github.wrobezin.eunha.app.diff;
 import com.github.difflib.DiffUtils;
 import com.github.difflib.algorithm.DiffException;
 import com.github.difflib.patch.DeltaType;
-import io.github.wrobezin.eunha.data.entity.document.OriginalDocument;
+import io.github.wrobezin.eunha.data.entity.document.Page;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
  * @date 2020/4/7 17:30
  */
 public class DifferenceUtils {
-    private static List<String> cutBodyToLines(OriginalDocument document) {
-        String body = document.getBody();
+    private static List<String> cutBodyToLines(Page page) {
+        String body = page.getBody();
         body = body.replace("\r\n", "\n");
         body = body.replace("\r", "\n");
         return Arrays.asList(body.split("\n"));
@@ -41,14 +41,14 @@ public class DifferenceUtils {
         return diff(Collections.singletonList(s1), Collections.singletonList(s2));
     }
 
-    public static List<Difference> diff(OriginalDocument oldDocument, OriginalDocument newDocument) {
+    public static List<Difference> diff(Page oldPage, Page newPage) {
         List<Difference> result = new LinkedList<>();
         try {
-            diff(oldDocument.getTitle(), newDocument.getTitle()).forEach(difference -> {
+            diff(oldPage.getTitle(), newPage.getTitle()).forEach(difference -> {
                 difference.setInfoType(Difference.TITLE);
                 result.add(difference);
             });
-            diff(cutBodyToLines(oldDocument), cutBodyToLines(newDocument)).forEach(difference -> {
+            diff(cutBodyToLines(oldPage), cutBodyToLines(newPage)).forEach(difference -> {
                 difference.setInfoType(Difference.BODY);
                 result.add(difference);
             });
@@ -59,11 +59,11 @@ public class DifferenceUtils {
     }
 
     public static void main(String[] args) {
-        OriginalDocument document1 = OriginalDocument.builder()
+        Page document1 = Page.builder()
                 .title("test")
                 .body("test1\ntest\ntest")
                 .build();
-        OriginalDocument document2 = OriginalDocument.builder()
+        Page document2 = Page.builder()
                 .title("test")
                 .body("test2\ntest\ntest\ntest2")
                 .build();

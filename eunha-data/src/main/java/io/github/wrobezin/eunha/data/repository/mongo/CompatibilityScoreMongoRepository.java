@@ -1,6 +1,7 @@
 package io.github.wrobezin.eunha.data.repository.mongo;
 
 import io.github.wrobezin.eunha.data.entity.document.CompatibilityScore;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
@@ -23,9 +24,10 @@ public interface CompatibilityScoreMongoRepository extends MongoRepository<Compa
     /**
      * 获取大于或等于特定值的匹配度评分
      *
-     * @param ruleId 规则ID
-     * @param value  值
+     * @param ruleId   规则ID
+     * @param value    值
+     * @param pageable 分页参数
      * @return 匹配度评分列表
      */
-    List<CompatibilityScore> findAllByRuleIdAndValueGreaterThanEqual(String ruleId, Double value);
+    List<CompatibilityScore> findByRuleIdAndValueGreaterThanEqual(String ruleId, Double value, Pageable pageable);
 }
