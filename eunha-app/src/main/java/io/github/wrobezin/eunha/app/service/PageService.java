@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class PageService {
+    private static final double MATCHED = 1.0;
+
     private final CompatibilityScoreMongoRepository compatibilityRepository;
     private final PageElasticsearchRepository pageEsRepository;
 
@@ -27,11 +29,15 @@ public class PageService {
     }
 
     public List<Page> getMatchingRule(String ruleId, int pageIndex, int pageSize) {
-        return compatibilityRepository.findByRuleIdAndValueGreaterThanEqual(ruleId, 1.0, PageRequest.of(pageIndex, pageSize))
+        return compatibilityRepository.findByRuleIdAndValueGreaterThanEqual(ruleId, MATCHED, PageRequest.of(pageIndex, pageSize))
                 .stream()
                 .map(CompatibilityScore::getUrl)
                 .map(QueryParser::escape)
                 .map(pageEsRepository::findByUrl)
                 .collect(Collectors.toList());
+    }
+
+    public Integer countMatchingRule(String ruleId) {
+        return compatibilityRepository.countByRuleIdAndValueGreaterThanEqual(ruleId, MATCHED);
     }
 }

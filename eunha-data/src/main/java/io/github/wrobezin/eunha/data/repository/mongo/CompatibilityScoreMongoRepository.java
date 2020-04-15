@@ -30,4 +30,13 @@ public interface CompatibilityScoreMongoRepository extends MongoRepository<Compa
      * @return 匹配度评分列表
      */
     List<CompatibilityScore> findByRuleIdAndValueGreaterThanEqual(String ruleId, Double value, Pageable pageable);
+
+    /**
+     * 统计大于或等于特定值的匹配度评分
+     *
+     * @param ruleId 规则ID
+     * @param value  值
+     * @return 总数
+     */
+    Integer countByRuleIdAndValueGreaterThanEqual(String ruleId, Double value);
 }

@@ -149,8 +149,8 @@ class EunhaApplicationTest {
     }
 
     @Test
-    void temp() {
-        dataOpertor.searchByKerword("心语", 0, 100)
+    void testSearch() {
+        dataOpertor.searchByKerword(Arrays.asList("心语", "阳光"), 0, 100)
                 .forEach(obj -> {
                     System.out.println(obj.getTitle());
                     System.out.println(obj.getUrl());
@@ -160,7 +160,8 @@ class EunhaApplicationTest {
     }
 
     @Test
-    void temp1() {
+    void testMatch() {
+        System.out.println(compatibilityScoreRepository.countByRuleIdAndValueGreaterThanEqual("6c787e0c-1d56-4be9-a8a3-7e51d63b9dda", 1.0));
         compatibilityScoreRepository.findByRuleIdAndValueGreaterThanEqual("6c787e0c-1d56-4be9-a8a3-7e51d63b9dda", 1.0, PageRequest.of(0, 100))
                 .forEach(score -> {
                     System.out.println(score.getUrl());
@@ -170,12 +171,5 @@ class EunhaApplicationTest {
                     System.out.println(page.getUrl());
                     System.out.println("-------------------------------");
                 });
-    }
-
-    @Test
-    void temp2() {
-        String url = "http://jiaren.org:80/tag/%E6%99%9A%E5%AE%89%E5%BF%83%E8%AF%AD/";
-        url = QueryParser.escape(url);
-        System.out.println(pageEsRepository.findByUrl(url.toLowerCase()));
     }
 }

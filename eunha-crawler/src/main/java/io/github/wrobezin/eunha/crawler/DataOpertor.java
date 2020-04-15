@@ -7,6 +7,7 @@ import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchR
 import io.github.wrobezin.eunha.data.repository.mongo.PageMongoRepository;
 import io.github.wrobezin.eunha.data.utils.EntityHashUtils;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -33,11 +34,12 @@ public class DataOpertor {
         this.pageMongoRepository = pageMongoRepository;
     }
 
-    public List<Page> searchByKerword(String keyword, int pageIndex, int pageSize) {
+    public List<Page> searchByKerword(List<String> keywords, int pageIndex, int pageSize) {
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
-        queryBuilder.withQuery(QueryBuilders.boolQuery()
-                .should(QueryBuilders.matchQuery("title", keyword))
-                .should(QueryBuilders.matchQuery("body", keyword)));
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        keywords.forEach(word -> boolQuery.should(QueryBuilders.matchQuery("title", word)));
+        keywords.forEach(word -> boolQuery.should(QueryBuilders.matchQuery("body", word)));
+        queryBuilder.withQuery(boolQuery);
         queryBuilder.withPageable(PageRequest.of(pageIndex, pageSize));
         return pageEsRepository.search(queryBuilder.build()).toList();
     }

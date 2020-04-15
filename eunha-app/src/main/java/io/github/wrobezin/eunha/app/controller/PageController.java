@@ -3,6 +3,7 @@ package io.github.wrobezin.eunha.app.controller;
 import io.github.wrobezin.eunha.app.service.PageService;
 import io.github.wrobezin.eunha.data.entity.document.Page;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,8 +23,13 @@ public class PageController {
         this.pageService = pageService;
     }
 
-    @GetMapping("/rule")
-    public List<Page> getRuleMatchedPages(String ruleId,Integer pageIndex,Integer pageSize){
-        return pageService.getMatchingRule(ruleId,pageIndex,pageSize);
+    @GetMapping("/rule-matched")
+    public List<Page> getRuleMatchedPages(String ruleId, Integer pageIndex, Integer pageSize) {
+        return pageService.getMatchingRule(ruleId, pageIndex, pageSize);
+    }
+
+    @GetMapping("/rule-matched-count/{ruleId}")
+    public Integer countRuleMatchedPages(@PathVariable String ruleId) {
+        return pageService.countMatchingRule(ruleId);
     }
 }
