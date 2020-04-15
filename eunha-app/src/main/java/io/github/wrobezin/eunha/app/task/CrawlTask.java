@@ -5,7 +5,6 @@ import io.github.wrobezin.eunha.crawler.PageCrawler;
 import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
 import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class CrawlTask {
     }
 
 //    @Scheduled(cron = "0 0 0/3 * * ?")
-    @Scheduled(cron = "0 0 * * * ?")
+//    @Scheduled(cron = "0 0 * * * ?")
     public void run() {
         List<CustomizedRule> rules = ruleService.findAll();
         log.info("从数据库中获取{}条规则", rules.size());

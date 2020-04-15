@@ -52,7 +52,7 @@ class EunhaApplicationTest {
     @Test
     void testCrawl() {
         CustomizedRule customizedRule = ruleService.findAll().get(0);
-        customizedRule.getCrawlRule().setMaxExpandDepth(2);
+        customizedRule.getCrawlRule().setMaxExpandDepth(1);
         crawler.crawl(customizedRule);
     }
 
@@ -170,5 +170,12 @@ class EunhaApplicationTest {
                     System.out.println(page.getUrl());
                     System.out.println("-------------------------------");
                 });
+    }
+
+    @Test
+    void temp2() {
+        String url = "http://jiaren.org:80/tag/%E6%99%9A%E5%AE%89%E5%BF%83%E8%AF%AD/";
+        url = QueryParser.escape(url);
+        System.out.println(pageEsRepository.findByUrl(url.toLowerCase()));
     }
 }

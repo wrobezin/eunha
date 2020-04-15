@@ -146,11 +146,15 @@ public class Estimater {
 
     public double estimate(Double pageCompatibility, HyperLinkToDownload link, CustomizedRule rule) {
         String url = HttpUrlUtils.parseUrl(link.getLink().getUrl()).getUrlWithQuery();
-        double history = Optional.ofNullable(compatibilityRepository.findByUrlAndRuleId(url, rule.getId()))
-                .map(CompatibilityScore::getValue)
-                .orElse(0.0);
+        double history = getHistoryScore(url, rule.getId());
         return history * HISTORY_SCORE_RATE
                 + pageCompatibility * PARENT_PAGE_RATE
                 + estimate(link.getLink(), rule.getInterestRule()) * LINK_SELF_RATE;
+    }
+
+    public double getHistoryScore(String url, String ruleId) {
+        return Optional.ofNullable(compatibilityRepository.findByUrlAndRuleId(url, ruleId))
+                .map(CompatibilityScore::getValue)
+                .orElse(FALSE);
     }
 }

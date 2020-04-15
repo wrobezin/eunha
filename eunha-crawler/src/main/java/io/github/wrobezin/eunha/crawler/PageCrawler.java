@@ -80,8 +80,10 @@ public class PageCrawler implements Crawler {
                 // 处理解析结果并将最终爬取结果添加到爬取结果列表
                 CrawlResult crawlResult = handleParseResult(parseResult);
                 crawlResults.add(crawlResult);
+                // TODO 目前无论页面是否有更新，都重新评估匹配度，因为规则也可能发生过改变。之后需要进行优化，页面和规则都不变时，直接使用历史数据。
                 // 评估页面与兴趣规则之间的匹配度
                 double compatibility = estimater.estimate(crawlResult.getPageInDb(), interestRule);
+                log.info("{} : {}", crawlResult.getPageInDb().getTitle(), compatibility);
                 // 保存最新匹配度
                 compatibilityRepository.save(new CompatibilityScore(urlToDonwload, customizedRule.getId(), compatibility));
                 // URL扩展

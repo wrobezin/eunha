@@ -55,7 +55,7 @@ public class DataOpertor {
                 .map(Page::getVersion)
                 .map(v -> v + 1)
                 .orElse(1);
-        Page page = Page.BLANK;
+        Page page = newestInDb;
         if (updated) {
             LocalDateTime now = LocalDateTime.now();
             page = Page.builder()

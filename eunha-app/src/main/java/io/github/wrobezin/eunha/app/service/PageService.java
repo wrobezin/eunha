@@ -32,7 +32,6 @@ public class PageService {
                 .map(CompatibilityScore::getUrl)
                 .map(QueryParser::escape)
                 .map(pageEsRepository::findByUrl)
-                .peek(page -> System.out.println(page.getUrl()))
                 .collect(Collectors.toList());
     }
 }
