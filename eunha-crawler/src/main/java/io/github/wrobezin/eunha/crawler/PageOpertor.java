@@ -10,9 +10,11 @@ import io.github.wrobezin.framework.utils.http.UrlInfo;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,24 +26,36 @@ import static java.util.Optional.ofNullable;
  * @date 2020/4/14 15:26
  */
 @Component
-public class DataOpertor {
+public class PageOpertor {
     private final PageElasticsearchRepository pageEsRepository;
-
     private final PageMongoRepository pageMongoRepository;
+    @Resource
+    private ElasticsearchOperations elasticsearchOperations;
 
-    public DataOpertor(PageElasticsearchRepository pageEsRepository, PageMongoRepository pageMongoRepository) {
+    public PageOpertor(PageElasticsearchRepository pageEsRepository, PageMongoRepository pageMongoRepository) {
         this.pageEsRepository = pageEsRepository;
         this.pageMongoRepository = pageMongoRepository;
     }
 
-    public List<Page> searchByKerword(List<String> keywords, int pageIndex, int pageSize) {
+    private NativeSearchQueryBuilder createKeywordQueryBuilder(List<String> keywords) {
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         keywords.forEach(word -> boolQuery.should(QueryBuilders.matchQuery("title", word)));
         keywords.forEach(word -> boolQuery.should(QueryBuilders.matchQuery("body", word)));
         queryBuilder.withQuery(boolQuery);
-        queryBuilder.withPageable(PageRequest.of(pageIndex, pageSize));
-        return pageEsRepository.search(queryBuilder.build()).toList();
+        return queryBuilder;
+    }
+
+    public Long countByKeywords(List<String> keywords) {
+        NativeSearchQueryBuilder keywordQuery = createKeywordQueryBuilder(keywords);
+        keywordQuery.withIndices("eunha");
+        return elasticsearchOperations.count(keywordQuery.build());
+    }
+
+    public List<Page> searchByKeywords(List<String> keywords, int pageIndex, int pageSize) {
+        NativeSearchQueryBuilder keywordQuery = createKeywordQueryBuilder(keywords);
+        keywordQuery.withPageable(PageRequest.of(pageIndex, pageSize));
+        return pageEsRepository.search(keywordQuery.build()).toList();
     }
 
     public CrawlResult savePageData(ParseResult parseResult) {

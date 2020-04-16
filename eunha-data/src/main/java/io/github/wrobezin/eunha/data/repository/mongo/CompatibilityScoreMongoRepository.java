@@ -38,5 +38,5 @@ public interface CompatibilityScoreMongoRepository extends MongoRepository<Compa
      * @param value  值
      * @return 总数
      */
-    Integer countByRuleIdAndValueGreaterThanEqual(String ruleId, Double value);
+    Long countByRuleIdAndValueGreaterThanEqual(String ruleId, Double value);
 }

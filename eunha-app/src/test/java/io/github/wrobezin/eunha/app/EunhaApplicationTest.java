@@ -1,9 +1,9 @@
 package io.github.wrobezin.eunha.app;
 
 import io.github.wrobezin.eunha.app.service.RuleService;
-import io.github.wrobezin.eunha.crawler.DataOpertor;
 import io.github.wrobezin.eunha.crawler.Estimater;
 import io.github.wrobezin.eunha.crawler.PageCrawler;
+import io.github.wrobezin.eunha.crawler.PageOpertor;
 import io.github.wrobezin.eunha.data.entity.document.Page;
 import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import io.github.wrobezin.eunha.data.entity.rule.InterestRule;
@@ -38,7 +38,7 @@ class EunhaApplicationTest {
     private PageElasticsearchRepository pageRepository;
 
     @Autowired
-    private DataOpertor dataOpertor;
+    private PageOpertor pageOpertor;
 
     @Autowired
     private Estimater estimate;
@@ -150,7 +150,8 @@ class EunhaApplicationTest {
 
     @Test
     void testSearch() {
-        dataOpertor.searchByKerword(Arrays.asList("心语", "阳光"), 0, 100)
+        System.out.println(pageOpertor.countByKeywords(Arrays.asList("心语", "阳光")));
+        pageOpertor.searchByKeywords(Arrays.asList("心语", "阳光"), 0, 100)
                 .forEach(obj -> {
                     System.out.println(obj.getTitle());
                     System.out.println(obj.getUrl());

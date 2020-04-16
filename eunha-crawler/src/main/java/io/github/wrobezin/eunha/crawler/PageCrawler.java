@@ -42,13 +42,13 @@ public class PageCrawler implements Crawler {
     private final Estimater estimater;
     private final CompatibilityScoreMongoRepository compatibilityRepository;
     private final GeneralHtmlParser parser;
-    private final DataOpertor dataOpertor;
+    private final PageOpertor pageOpertor;
 
-    public PageCrawler(Estimater estimater, CompatibilityScoreMongoRepository compatibilityRepository, GeneralHtmlParser parser, DataOpertor dataOpertor) {
+    public PageCrawler(Estimater estimater, CompatibilityScoreMongoRepository compatibilityRepository, GeneralHtmlParser parser, PageOpertor pageOpertor) {
         this.estimater = estimater;
         this.compatibilityRepository = compatibilityRepository;
         this.parser = parser;
-        this.dataOpertor = dataOpertor;
+        this.pageOpertor = pageOpertor;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class PageCrawler implements Crawler {
      * @return 最终爬取结果
      */
     private CrawlResult handleParseResult(ParseResult parseResult) {
-        return dataOpertor.savePageData(parseResult);
+        return pageOpertor.savePageData(parseResult);
     }
 
     private void sleep() {

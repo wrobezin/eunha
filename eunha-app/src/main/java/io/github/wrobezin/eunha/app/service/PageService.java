@@ -37,7 +37,7 @@ public class PageService {
                 .collect(Collectors.toList());
     }
 
-    public Integer countMatchingRule(String ruleId) {
+    public Long countMatchingRule(String ruleId) {
         return compatibilityRepository.countByRuleIdAndValueGreaterThanEqual(ruleId, MATCHED);
     }
 }

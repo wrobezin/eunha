@@ -3,8 +3,6 @@ package io.github.wrobezin.eunha.data.repository.elasticsearch;
 import io.github.wrobezin.eunha.data.entity.document.Page;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-import java.util.List;
-
 /**
  * @author yuan
  * @version 1.0
@@ -18,6 +16,4 @@ public interface PageElasticsearchRepository extends ElasticsearchRepository<Pag
      * @return 页面列表
      */
     Page findByUrl(String url);
-
-    List<Page> findByHost(String host);
 }

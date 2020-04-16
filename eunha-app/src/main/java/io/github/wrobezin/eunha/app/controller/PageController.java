@@ -29,7 +29,7 @@ public class PageController {
     }
 
     @GetMapping("/rule-matched-count/{ruleId}")
-    public Integer countRuleMatchedPages(@PathVariable String ruleId) {
+    public Long countRuleMatchedPages(@PathVariable String ruleId) {
         return pageService.countMatchingRule(ruleId);
     }
 }
