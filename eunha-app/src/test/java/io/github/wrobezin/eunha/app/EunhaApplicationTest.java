@@ -13,6 +13,7 @@ import io.github.wrobezin.eunha.data.entity.rule.SingleInterestRuleItem;
 import io.github.wrobezin.eunha.data.enums.RuleItemJudgeTypeEnum;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
+import io.github.wrobezin.eunha.push.mail.MailService;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -55,10 +56,13 @@ class EunhaApplicationTest {
     @Autowired
     private PageService pageService;
 
+    @Autowired
+    private MailService mailService;
+
     @Test
     void testCrawl() {
         CustomizedRule customizedRule = ruleService.findAll().get(0);
-        customizedRule.getCrawlRule().setMaxExpandDepth(1);
+        customizedRule.getCrawlRule().setMaxExpandDepth(2);
         crawler.crawl(customizedRule);
     }
 
@@ -188,5 +192,10 @@ class EunhaApplicationTest {
                     System.out.println(page.getUrl());
                     System.out.println("-------------------------------");
                 });
+    }
+
+    @Test
+    void testMail() {
+        mailService.sendSimpleMail("liangsiyuan@whutosa.comn", "test", "TEST");
     }
 }

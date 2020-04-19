@@ -8,6 +8,7 @@
         <module>framework-utils</module>
         <module>eunha-data</module>
         <module>eunha-crawler</module>
+        <module>eunha-push</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

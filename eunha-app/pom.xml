@@ -23,6 +23,11 @@
             <artifactId>eunha-crawler</artifactId>
             <version>${eunha-version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.wrobezin</groupId>
+            <artifactId>eunha-push</artifactId>
+            <version>${eunha-version}</version>
+        </dependency>
 
         <!-- DiffUtils -->
         <dependency>

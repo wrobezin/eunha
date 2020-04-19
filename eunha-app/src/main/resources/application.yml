@@ -1,5 +1,5 @@
 server:
   port: 80
 spring:
-    profiles:
-      active: data
+  profiles:
+    active: data, push

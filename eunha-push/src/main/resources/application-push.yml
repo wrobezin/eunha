@@ -1,0 +1,6 @@
+spring:
+  mail:
+    host: smtp.126.com
+    username: eunha_push@126.com
+    password: BTHSVBTDJRABAUOJ
+    default-encoding: UTF-8
