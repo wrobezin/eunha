@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class RuleService {
     private final CustomizedRuleMongoRepository repository;
 
-
     public RuleService(CustomizedRuleMongoRepository repository) {
         this.repository = repository;
     }

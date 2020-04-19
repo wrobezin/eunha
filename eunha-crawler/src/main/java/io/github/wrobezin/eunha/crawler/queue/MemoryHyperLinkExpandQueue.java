@@ -4,7 +4,6 @@ import io.github.wrobezin.eunha.crawler.entity.HyperLinkToDownload;
 import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 
-import javax.validation.constraints.NotNull;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -25,7 +24,7 @@ public class MemoryHyperLinkExpandQueue implements HyperLinkExpandQueue {
     /** 用于记录已在队的超链接 */
     private Set<HyperLink> inQueue;
 
-    private static Integer getPathDepth(@NotNull final HyperLinkToDownload link) {
+    private static Integer getPathDepth(final HyperLinkToDownload link) {
         return HttpUrlUtils.parseUrl(link.getLink().getUrl()).getPath().split(URL_SEPARATION_TOKEN).length;
     }
 

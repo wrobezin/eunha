@@ -3,7 +3,6 @@ package io.github.wrobezin.framework.utils.http;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
-import javax.validation.constraints.NotNull;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -30,7 +29,7 @@ public final class HttpUrlUtils {
     private static final int URL_PATTERN_QUERY_GROUP_INDEX = 5;
     private static final int URL_PATTERN_FRAGMENT_GROUP_INDEX = 6;
 
-    public static String urlEncode(@NotNull final String url, @NotNull final String charSet) {
+    public static String urlEncode(final String url, final String charSet) {
         try {
             return URLEncoder.encode(url, charSet)
                     .replace("%3A", ":")
@@ -45,7 +44,7 @@ public final class HttpUrlUtils {
         }
     }
 
-    public static String urlDecode(@NotNull final String encodedString, @NotNull final String charSet) {
+    public static String urlDecode(final String encodedString, final String charSet) {
         return Optional.ofNullable(encodedString)
                 .map(str -> {
                     try {
@@ -58,11 +57,11 @@ public final class HttpUrlUtils {
                 .orElse("");
     }
 
-    public static String urlEncode(@NotNull final String url) {
+    public static String urlEncode(final String url) {
         return urlEncode(url, "UTF-8");
     }
 
-    public static String urlDecode(@NotNull final String url) {
+    public static String urlDecode(final String url) {
         return urlDecode(url, "UTF-8");
     }
 

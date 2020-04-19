@@ -19,7 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HyperLink {
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "searchAnalyzer", searchAnalyzer = "searchAnalyzer")
     private String anchorText;
 
     @Field(type = FieldType.Keyword)

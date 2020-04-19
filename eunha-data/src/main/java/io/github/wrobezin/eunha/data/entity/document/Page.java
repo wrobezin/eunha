@@ -1,17 +1,13 @@
 package io.github.wrobezin.eunha.data.entity.document;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -32,30 +28,31 @@ public class Page {
     @Id
     private String id;
 
-    @Field(type = FieldType.Keyword)
+    @Field
     private String host;
 
-    @Field(type = FieldType.Keyword)
+    @Field
     private String url;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    @Field
     private String title;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    @Field
     private String body;
 
-    @Field(type = FieldType.Keyword)
+    @Field
     private String fingerPrint;
 
+    @Field
     private Integer version;
 
     @Field
     private List<HyperLink> hyperLinks;
 
-    @Field(type = FieldType.Date)
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updateTime;
 
     public static final Page BLANK = Page.builder()

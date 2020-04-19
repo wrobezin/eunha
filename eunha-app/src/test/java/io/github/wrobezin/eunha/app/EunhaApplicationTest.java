@@ -1,9 +1,11 @@
 package io.github.wrobezin.eunha.app;
 
+import io.github.wrobezin.eunha.app.service.PageService;
 import io.github.wrobezin.eunha.app.service.RuleService;
 import io.github.wrobezin.eunha.crawler.Estimater;
 import io.github.wrobezin.eunha.crawler.PageCrawler;
 import io.github.wrobezin.eunha.crawler.PageOpertor;
+import io.github.wrobezin.eunha.crawler.entity.ParseResult;
 import io.github.wrobezin.eunha.data.entity.document.Page;
 import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import io.github.wrobezin.eunha.data.entity.rule.InterestRule;
@@ -11,13 +13,14 @@ import io.github.wrobezin.eunha.data.entity.rule.SingleInterestRuleItem;
 import io.github.wrobezin.eunha.data.enums.RuleItemJudgeTypeEnum;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
+import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -48,6 +51,9 @@ class EunhaApplicationTest {
 
     @Autowired
     private PageElasticsearchRepository pageEsRepository;
+
+    @Autowired
+    private PageService pageService;
 
     @Test
     void testCrawl() {
@@ -149,13 +155,24 @@ class EunhaApplicationTest {
     }
 
     @Test
+    void testAdd() {
+        ParseResult parseResult = ParseResult.builder()
+                .urlInfo(HttpUrlUtils.parseUrl("http://fuck.you/sb/elasticsearch/"))
+                .links(new ArrayList<>())
+                .body("<div>链接：<a herf=\"fuck\">阳光普照<a>大地回春，春天到了，花开了</div>")
+                .title("春天的风光")
+                .build();
+        System.out.println(pageOpertor.savePageData(parseResult));
+    }
+
+    @Test
     void testSearch() {
-        System.out.println(pageOpertor.countByKeywords(Arrays.asList("心语", "阳光")));
-        pageOpertor.searchByKeywords(Arrays.asList("心语", "阳光"), 0, 100)
-                .forEach(obj -> {
-                    System.out.println(obj.getTitle());
-                    System.out.println(obj.getUrl());
-//                        System.out.println(((Page) obj).getBody());
+        pageService.searchByKeywords("马 云", 0, 1)
+                .forEach(page -> {
+                    System.out.println(page.getTitle());
+                    System.out.println(page.getUrl());
+                    System.out.println(page.getSummary());
+//                    System.out.println(page.getBody());
                     System.out.println("----------------------------------");
                 });
     }
@@ -166,9 +183,8 @@ class EunhaApplicationTest {
         compatibilityScoreRepository.findByRuleIdAndValueGreaterThanEqual("6c787e0c-1d56-4be9-a8a3-7e51d63b9dda", 1.0, PageRequest.of(0, 100))
                 .forEach(score -> {
                     System.out.println(score.getUrl());
-                    String escape = QueryParser.escape(score.getUrl());
-                    System.out.println(escape);
-                    Page page = pageEsRepository.findByUrl(escape);
+                    String url = score.getUrl();
+                    Page page = pageEsRepository.findByUrl(url);
                     System.out.println(page.getUrl());
                     System.out.println("-------------------------------");
                 });
