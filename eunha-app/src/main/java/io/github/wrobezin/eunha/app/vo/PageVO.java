@@ -63,10 +63,10 @@ public class PageVO {
                 // 右边界不超过第二组em
                 int end = secondEmStartPosition > 0 ? secondEmStartPosition : line.length();
                 end = Math.min(firstEmEndPosition + SUMMARY_SEGMET_WINDOW, end);
-                line = line.substring(start, end) + "...";
+                line = line.substring(start, end) + "……";
             }
             summary.append(line);
-            summary.append(" ");
+            summary.append("……");
         }
         return summary.toString();
     }
