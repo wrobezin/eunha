@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户自定义规则
@@ -30,6 +31,8 @@ public class CustomizedRule {
     private CrawlRule crawlRule;
     /** 兴趣规则 */
     private InterestRule interestRule;
+    /** 推送方式 */
+    private List<PushContact> pushContacts;
 
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

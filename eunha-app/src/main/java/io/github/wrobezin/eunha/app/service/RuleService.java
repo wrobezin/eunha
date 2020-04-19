@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,6 +69,7 @@ public class RuleService {
                 .stream()
                 .map(this::transformToVoItem)
                 .collect(Collectors.toList()));
+        vo.setPushContacts(rule.getPushContacts());
         return vo;
     }
 
@@ -79,6 +81,8 @@ public class RuleService {
         if (StringUtils.isBlank(vo.getId())) {
             vo.setId(UUID.randomUUID().toString());
         }
+        List<PushContact> pushContacts = Optional.ofNullable(vo.getPushContacts())
+                .orElse(Collections.emptyList());
         return CustomizedRule.builder()
                 .id(vo.getId())
                 .name(vo.getName())
@@ -86,6 +90,7 @@ public class RuleService {
                 .interestRule(new InterestRule(groups))
                 .createTime(Optional.ofNullable(vo.getCreateTime()).orElse(now))
                 .updateTime(now)
+                .pushContacts(pushContacts)
                 .build();
     }
 

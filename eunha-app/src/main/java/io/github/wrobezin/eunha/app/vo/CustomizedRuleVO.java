@@ -1,6 +1,7 @@
 package io.github.wrobezin.eunha.app.vo;
 
 import io.github.wrobezin.eunha.data.entity.rule.CrawlRule;
+import io.github.wrobezin.eunha.data.entity.rule.PushContact;
 import io.github.wrobezin.eunha.data.enums.RuleItemJudgeTypeEnum;
 import io.github.wrobezin.eunha.data.enums.RuleItemLogicTypeEnum;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class CustomizedRuleVO {
     private List<InterestItem> interestRule;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private List<PushContact> pushContacts;
 
     @Data
     public static class InterestItem {

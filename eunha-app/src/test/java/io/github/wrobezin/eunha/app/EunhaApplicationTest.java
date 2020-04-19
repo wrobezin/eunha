@@ -13,6 +13,7 @@ import io.github.wrobezin.eunha.data.entity.rule.SingleInterestRuleItem;
 import io.github.wrobezin.eunha.data.enums.RuleItemJudgeTypeEnum;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
+import io.github.wrobezin.eunha.data.repository.mongo.CustomizedRuleMongoRepository;
 import io.github.wrobezin.eunha.push.mail.MailService;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -59,10 +60,13 @@ class EunhaApplicationTest {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private CustomizedRuleMongoRepository ruleRepository;
+
     @Test
     void testCrawl() {
         CustomizedRule customizedRule = ruleService.findAll().get(0);
-        customizedRule.getCrawlRule().setMaxExpandDepth(2);
+        customizedRule.getCrawlRule().setMaxExpandDepth(1);
         crawler.crawl(customizedRule);
     }
 
