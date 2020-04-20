@@ -26,11 +26,13 @@ public class CrawlResult {
     private Integer version;
     private LocalDateTime finishTime;
     private Page pageInDb;
+    private Boolean isRuleMatched;
 
     public static final CrawlResult BLANK = CrawlResult.builder()
             .url("")
             .newPage(false)
             .updated(false)
             .version(-1)
+            .isRuleMatched(false)
             .build();
 }

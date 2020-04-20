@@ -200,6 +200,6 @@ class EunhaApplicationTest {
 
     @Test
     void testMail() {
-        mailService.sendSimpleMail("liangsiyuan@whutosa.comn", "test", "TEST");
+        mailService.sendMail("liangsiyuan@whutosa.com", "test", "测试<br><hr><ur><li>1</li><li>2</li><li>3</li></ur>");
     }
 }

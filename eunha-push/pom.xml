@@ -11,7 +11,18 @@
 
     <artifactId>eunha-push</artifactId>
 
+    <properties>
+        <eunha-version>0.0.1-SNAPSHOT</eunha-version>
+    </properties>
+
     <dependencies>
+        <!-- eunha -->
+        <dependency>
+            <groupId>io.github.wrobezin</groupId>
+            <artifactId>eunha-crawler</artifactId>
+            <version>${eunha-version}</version>
+        </dependency>
+
         <!-- SpringBoot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

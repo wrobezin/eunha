@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,11 +21,23 @@ import java.util.stream.Stream;
  * date: 2020/1/21
  */
 public final class HyperLinkUtils {
-    public static List<HyperLink> getAllLinks(Element element) {
-        return getLinksSatisfy(element, UrlInfo::isHttpUrl);
+    private static final String RELATIVE_PATH_FLAG = "/";
+
+    public static List<HyperLink> getAllLinks(Element element, String protocal, String host) {
+        return getLinksSatisfy(element, url -> true, url -> {
+            // 把相对路径转换成绝对路径
+            if (url.startsWith(RELATIVE_PATH_FLAG)) {
+                return protocal + "://" + host + url;
+            }
+            return url;
+        });
     }
 
-    public static List<HyperLink> getLinksSatisfy(Element element, Predicate<UrlInfo> satisfy) {
+    public static List<HyperLink> getAllAbsoluteHttpLinks(Element element) {
+        return getLinksSatisfy(element, UrlInfo::isHttpUrl, url -> url);
+    }
+
+    public static List<HyperLink> getLinksSatisfy(Element element, Predicate<UrlInfo> satisfy, Function<String, String> urlMapper) {
         return Optional.ofNullable(element)
                 .map(e -> e.getElementsByTag("a"))
                 .map(Collection::stream)
@@ -35,6 +48,7 @@ public final class HyperLinkUtils {
                     String anchorText = StringUtils.isBlank(title) ? text : title;
                     String url = Optional.ofNullable(aTag.attr("href"))
                             .map(HyperLinkUtils::cutWhiteToken)
+                            .map(urlMapper)
                             .orElse("");
                     return new HyperLink(anchorText, url);
                 })

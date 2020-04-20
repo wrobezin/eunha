@@ -4,8 +4,10 @@ import io.github.wrobezin.eunha.crawler.entity.DownloadResult;
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
 import io.github.wrobezin.eunha.crawler.utils.HyperLinkUtils;
 import io.github.wrobezin.eunha.data.entity.document.HyperLink;
+import io.github.wrobezin.framework.utils.http.UrlInfo;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Cleaner;
@@ -51,16 +53,27 @@ public class GeneralHtmlParser {
     }
 
     public ParseResult parse(DownloadResult downloadResult) {
+        UrlInfo urlInfo = downloadResult.getUrlInfo();
         Document document = Jsoup.parse(getPayload(downloadResult.getResponse()));
         String title = document.title();
         String body = HTML_CLEANER.clean(document).body()
                 .children()
                 .stream()
+                .peek(element -> {
+                    // 将图片的相对链接转换成绝对链接
+                    if ("img".equals(element.tagName())) {
+                        String src = element.attr("src");
+                        if (StringUtils.isNotBlank(src) && src.startsWith("/")) {
+                            src = urlInfo.getProtocal() + "://" + urlInfo.getHost() + src;
+                            element.attr("src", src);
+                        }
+                    }
+                })
                 .map(Objects::toString)
                 .collect(Collectors.joining());
-        List<HyperLink> links = HyperLinkUtils.getAllLinks(document);
+        List<HyperLink> links = HyperLinkUtils.getAllLinks(document, urlInfo.getProtocal(), urlInfo.getHost());
         return ParseResult.builder()
-                .urlInfo(downloadResult.getUrlInfo())
+                .urlInfo(urlInfo)
                 .title(title)
                 .body(body)
                 .links(links)

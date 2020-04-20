@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 public class PageCrawler implements Crawler {
     // ----------------------------------------工作逻辑相关----------------------------------------
     private HyperLinkExpandQueue queue = new MemoryHyperLinkExpandQueue((l1, l2) -> l2.getScore().compareTo(l1.getScore()));
-    private final Integer SLEEP_TIME = 700;
+    private final Integer SLEEP_TIME = 1000;
 
     private final Estimater estimater;
     private final CompatibilityScoreMongoRepository compatibilityRepository;
@@ -84,6 +84,7 @@ public class PageCrawler implements Crawler {
                 // 评估页面与兴趣规则之间的匹配度
                 double compatibility = estimater.estimate(crawlResult.getPageInDb(), interestRule);
                 log.info("{} : {}", crawlResult.getPageInDb().getTitle(), compatibility);
+                crawlResult.setIsRuleMatched(compatibility == Estimater.TRUE);
                 // 保存最新匹配度
                 compatibilityRepository.save(new CompatibilityScore(urlToDonwload, customizedRule.getId(), compatibility));
                 // URL扩展

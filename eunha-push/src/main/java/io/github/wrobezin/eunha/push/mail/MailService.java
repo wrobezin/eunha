@@ -1,8 +1,12 @@
 package io.github.wrobezin.eunha.push.mail;
 
-import org.springframework.mail.SimpleMailMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 /**
  * @author yuan
@@ -10,6 +14,7 @@ import org.springframework.stereotype.Service;
  * @date 2020/4/19 20:45
  */
 @Service
+@Slf4j
 public class MailService {
     private final JavaMailSender mailSender;
 
@@ -19,12 +24,18 @@ public class MailService {
         this.mailSender = mailSender;
     }
 
-    public void sendSimpleMail(String to, String subject, String content) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(FROM);
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(content);
-        mailSender.send(message);
+    public void sendMail(String to, String subject, String content) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
+            messageHelper.setFrom(FROM);
+            messageHelper.setTo(to);
+            messageHelper.setSubject(subject);
+            messageHelper.setText(content, true);
+            mailSender.send(message);
+            log.info("发送邮件到{}", to);
+        } catch (MessagingException e) {
+            log.error("发送邮件出错", e);
+        }
     }
 }
