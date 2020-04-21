@@ -42,4 +42,14 @@ public class PageController {
     public List<PageVO> searchByKeywords(String keywords, int pageIndex, int pageSize) {
         return pageService.searchByKeywords(keywords, pageIndex, pageSize);
     }
+
+    @GetMapping("/history")
+    public List<PageVO> getHistoryVersion(String url) {
+        return pageService.getHistoryPages(url);
+    }
+
+    @GetMapping("/history-count")
+    public Integer countHistoryVersion(String url) {
+        return pageService.countHistoryPages(url);
+    }
 }

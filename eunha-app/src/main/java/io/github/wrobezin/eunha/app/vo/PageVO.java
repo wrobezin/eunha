@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,6 +31,8 @@ public class PageVO {
     private String host;
     private String summary;
     private String body;
+    private Integer version;
+    private LocalDateTime updateTime;
 
     private static final Cleaner TAG_CLEANER = new Cleaner(Whitelist.none().addTags("em"));
     private static final int SUMMARY_WHOLE_LENGTH_LIMIT = 256;
@@ -79,5 +82,7 @@ public class PageVO {
         this.summary = generateSummary(page.getBody());
         this.url = page.getUrl();
         this.host = page.getHost();
+        this.version = page.getVersion();
+        this.updateTime = page.getUpdateTime();
     }
 }

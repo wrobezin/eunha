@@ -5,6 +5,7 @@ import io.github.wrobezin.eunha.data.entity.document.CompatibilityScore;
 import io.github.wrobezin.eunha.data.entity.document.Page;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
+import io.github.wrobezin.eunha.data.repository.mongo.PageMongoRepository;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -34,15 +35,18 @@ public class PageService {
 
     private final CompatibilityScoreMongoRepository compatibilityRepository;
     private final PageElasticsearchRepository pageEsRepository;
+    private final PageMongoRepository pageMongoRepository;
+
     @Resource
     private ElasticsearchRestTemplate esTemplate;
 
     private static final String SEARCH_HIGHLIGHT_PRE_TAG = "<search-em>";
     private static final String SEARCH_HIGHLIGHT_POST_TAG = "</search-em>";
 
-    public PageService(CompatibilityScoreMongoRepository compatibilityRepository, PageElasticsearchRepository pageEsRepository) {
+    public PageService(CompatibilityScoreMongoRepository compatibilityRepository, PageElasticsearchRepository pageEsRepository, PageMongoRepository pageMongoRepository) {
         this.compatibilityRepository = compatibilityRepository;
         this.pageEsRepository = pageEsRepository;
+        this.pageMongoRepository = pageMongoRepository;
     }
 
     public List<PageVO> getMatchingRule(String ruleId, int pageIndex, int pageSize) {
@@ -106,5 +110,16 @@ public class PageService {
                 })
                 .map(PageVO::new)
                 .collect(Collectors.toList());
+    }
+
+    public List<PageVO> getHistoryPages(String url) {
+        return pageMongoRepository.findAllByUrlOrderByVersionDesc(url)
+                .stream()
+                .map(PageVO::new)
+                .collect(Collectors.toList());
+    }
+
+    public Integer countHistoryPages(String url) {
+        return pageMongoRepository.countByUrl(url);
     }
 }

@@ -9,4 +9,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @date 2020/4/4 16:55
  */
 public interface CustomizedRuleMongoRepository extends MongoRepository<CustomizedRule, String> {
+    /**
+     * 根据规则名获取规则
+     *
+     * @param name 规则名
+     * @return 规则
+     */
+    CustomizedRule findByName(String name);
 }
