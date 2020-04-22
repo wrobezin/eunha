@@ -23,63 +23,64 @@ public class PushHub {
     private final MailService mailService;
     private final DingTalkService dingTalkService;
 
+    private static final int LIST_MAX_LENGTH = 10;
+
     public PushHub(MailService mailService, DingTalkService dingTalkService) {
         this.mailService = mailService;
         this.dingTalkService = dingTalkService;
     }
 
-    private String generatePushHtml(List<HyperLink> newPage, List<HyperLink> updatedPage, String ruleName) {
-        StringBuilder html = new StringBuilder();
-        html.append("<h2>规则【").append(ruleName).append("】有新抓取结果，共获取新增页面").append(newPage.size()).append("个及更新页面").append(updatedPage.size()).append("个</h2>");
-        if (newPage.size() > 0) {
-            html.append("<h3>新增页面</h3><ur>");
-            for (HyperLink link : newPage) {
+    private void addHtmlLinkList(String title, List<HyperLink> pages, StringBuilder html) {
+        if (pages.size() > 0) {
+            html.append("<h3>").append(title).append("</h3><ur>");
+            for (int i = 0; i < pages.size(); i++) {
+                if (i > LIST_MAX_LENGTH) {
+                    html.append("<li>更多请前往系统查看</li>");
+                    break;
+                }
                 html.append("<li><a herf=\"")
-                        .append(link.getUrl())
+                        .append(pages.get(i).getUrl())
                         .append("\">")
-                        .append(link.getAnchorText())
-                        .append("</a></li>");
-            }
-            html.append("</ur><br>");
-        }
-        if (updatedPage.size() > 0) {
-            html.append("<h3>更新页面</h3><ur>");
-            for (HyperLink link : updatedPage) {
-                html.append("<li><a herf=\"")
-                        .append(link.getUrl())
-                        .append("\">")
-                        .append(link.getAnchorText())
+                        .append(pages.get(i).getAnchorText())
                         .append("</a></li>");
             }
             html.append("</ur>");
         }
+    }
+
+    private String generatePushHtml(List<HyperLink> newPage, List<HyperLink> updatedPage, String ruleName) {
+        StringBuilder html = new StringBuilder();
+        html.append("<h2>规则【").append(ruleName).append("】有新抓取结果，共获取新增页面").append(newPage.size()).append("个及更新页面").append(updatedPage.size()).append("个</h2>");
+        html.append("<span>页面详情请前往系统后台查看</span>");
+        addHtmlLinkList("新增页面", newPage, html);
+        addHtmlLinkList("更新页面", updatedPage, html);
         return html.toString();
+    }
+
+    private void addMarkdownLinkList(String title, List<HyperLink> pages, StringBuilder md) {
+        if (pages.size() > 0) {
+            md.append("### ").append(title).append("\n");
+            for (int i = 0; i < pages.size(); i++) {
+                if (i > LIST_MAX_LENGTH) {
+                    md.append("+ 更多请前往系统查看");
+                    break;
+                }
+                md.append("+ [")
+                        .append(pages.get(i).getAnchorText())
+                        .append("](")
+                        .append(pages.get(i).getUrl())
+                        .append(")\n");
+            }
+        }
     }
 
     private String generatePushMarkdonw(List<HyperLink> newPage, List<HyperLink> updatedPage, String ruleName) {
         StringBuilder md = new StringBuilder();
         md.append("## 【").append(ruleName).append("】新抓取结果\n");
         md.append("共获取新增页面").append(newPage.size()).append("个及更新页面").append(updatedPage.size()).append("个\n");
-        if (newPage.size() > 0) {
-            md.append("### 新增页面\n");
-            for (HyperLink link : newPage) {
-                md.append("+ [")
-                        .append(link.getAnchorText())
-                        .append("](")
-                        .append(link.getUrl())
-                        .append(")\n");
-            }
-        }
-        if (updatedPage.size() > 0) {
-            md.append("### 更新页面\n");
-            for (HyperLink link : updatedPage) {
-                md.append("+ [")
-                        .append(link.getAnchorText())
-                        .append("](")
-                        .append(link.getUrl())
-                        .append(")\n");
-            }
-        }
+        md.append("页面详情请前往[系统后台](#)查看\n");
+        addMarkdownLinkList("新增页面", newPage, md);
+        addMarkdownLinkList("更新页面", updatedPage, md);
         return md.toString();
     }
 
