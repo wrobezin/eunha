@@ -122,4 +122,8 @@ public class PageService {
     public Integer countHistoryPages(String url) {
         return pageMongoRepository.countByUrl(url);
     }
+
+    public Page getByUrlAndVersion(String url, Integer version) {
+        return pageMongoRepository.findByUrlAndVersion(url, version);
+    }
 }

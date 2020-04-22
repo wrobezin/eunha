@@ -19,8 +19,10 @@ public class Difference {
     private String changeType;
     /** 信息类型（标题、正文、作者等） */
     private String infoType;
-    private Integer position;
-    private Integer lineNum;
+    private Integer sourcePosition;
+    private Integer sourceLineNum;
+    private Integer targetPosition;
+    private Integer targetLineNum;
 
     public static final String TITLE = "title";
     public static final String BODY = "body";

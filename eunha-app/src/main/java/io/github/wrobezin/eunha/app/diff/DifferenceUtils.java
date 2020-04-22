@@ -31,8 +31,10 @@ public class DifferenceUtils {
                 .filter(delta -> !DeltaType.EQUAL.equals(delta.getType()))
                 .map(delta -> Difference.builder()
                         .changeType(delta.getType().name())
-                        .position(delta.getSource().getPosition())
-                        .lineNum(delta.getSource().getLines().size())
+                        .sourcePosition(delta.getSource().getPosition())
+                        .sourceLineNum(delta.getSource().getLines().size())
+                        .targetPosition(delta.getTarget().getPosition())
+                        .targetLineNum(delta.getTarget().getLines().size())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -41,17 +43,19 @@ public class DifferenceUtils {
         return diff(Collections.singletonList(s1), Collections.singletonList(s2));
     }
 
-    public static List<Difference> diff(Page oldPage, Page newPage) {
+    public static List<Difference> diff(Page newPage, Page oldPage) {
         List<Difference> result = new LinkedList<>();
         try {
-            diff(oldPage.getTitle(), newPage.getTitle()).forEach(difference -> {
-                difference.setInfoType(Difference.TITLE);
-                result.add(difference);
-            });
-            diff(cutBodyToLines(oldPage), cutBodyToLines(newPage)).forEach(difference -> {
-                difference.setInfoType(Difference.BODY);
-                result.add(difference);
-            });
+            diff(oldPage.getTitle(), newPage.getTitle())
+                    .forEach(difference -> {
+                        difference.setInfoType(Difference.TITLE);
+                        result.add(difference);
+                    });
+            diff(cutBodyToLines(oldPage), cutBodyToLines(newPage))
+                    .forEach(difference -> {
+                        difference.setInfoType(Difference.BODY);
+                        result.add(difference);
+                    });
         } catch (DiffException e) {
             e.printStackTrace();
         }
@@ -67,6 +71,6 @@ public class DifferenceUtils {
                 .title("test")
                 .body("test2\ntest\ntest\ntest2")
                 .build();
-        System.out.println(diff(document1,document2));
+        System.out.println(diff(document1, document2));
     }
 }

@@ -35,4 +35,13 @@ public interface PageMongoRepository extends MongoRepository<Page, String> {
      * @return 页面版本数量
      */
     Integer countByUrl(String url);
+
+    /**
+     * 获取URL所对应页面的指定版本
+     *
+     * @param url     URL
+     * @param version 版本
+     * @return 指定页面
+     */
+    Page findByUrlAndVersion(String url, Integer version);
 }

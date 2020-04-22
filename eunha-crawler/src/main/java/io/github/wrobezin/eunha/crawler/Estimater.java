@@ -61,6 +61,8 @@ public class Estimater {
 
     private double pageFit(Page page, SingleInterestRuleItem ruleItem) {
         switch (ruleItem.getJudgeType()) {
+            case ALWAYS_TRUE:
+                return TRUE;
             case TITLE_CONTAIN:
                 return page.getTitle().contains(ruleItem.getValue()) ? TRUE : FALSE;
             case TITLE_NOT_CONTAIN:
