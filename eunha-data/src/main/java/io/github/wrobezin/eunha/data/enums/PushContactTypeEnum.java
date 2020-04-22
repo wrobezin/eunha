@@ -11,6 +11,8 @@ import lombok.Getter;
 public enum PushContactTypeEnum {
     /** 邮件 */
     EMAIL,
+    /** 钉钉 */
+    DING_TALK,
     /** 短信 */
     SMS
 }

@@ -1,6 +1,5 @@
 package io.github.wrobezin.eunha.app;
 
-import io.github.wrobezin.eunha.app.diff.DifferenceUtils;
 import io.github.wrobezin.eunha.app.service.PageService;
 import io.github.wrobezin.eunha.app.service.RuleService;
 import io.github.wrobezin.eunha.crawler.Estimater;
@@ -203,28 +202,5 @@ class EunhaApplicationTest {
     @Test
     void testMail() {
         mailService.sendMail("liangsiyuan@whutosa.com", "test", "测试<br><hr><ur><li>1</li><li>2</li><li>3</li></ur>");
-    }
-
-    @Test
-    void temp() {
-        Page p1 = Page.builder()
-                .title("")
-                .body("更多死亡：研究显示羟氯喹于新冠治疗无益\n" +
-                        "超1/3美国成人服用阿片类药物，数百万人滥用\n" +
-                        "“如何让你的老公在封闭隔离期间开心”的海报遭谴责\n" +
-                        "漫画行业能挺过新冠疫情吗？\n" +
-                        "受疫情影响，纽约州将允许情侣线上结婚\n" +
-                        "美国疾控中心下发了被新冠病毒污染的失效试剂盒")
-                .build();
-        Page p2 = Page.builder()
-                .title("")
-                .body("“如何让你的老公在封闭隔离期间开心”的海报遭谴责\n" +
-                        "漫画行业能挺过新冠疫情吗？\n" +
-                        "受疫情影响，纽约州将允许情侣线上结婚\n" +
-                        "美国疾控中心下发了被新冠病毒污染的失效试剂盒\n" +
-                        "关于克里奥佩特拉的5个趣闻\n" +
-                        "在玩耍这件事上，狗子和马儿有共同语言")
-                .build();
-        DifferenceUtils.diff(p1, p2).forEach(System.out::println);
     }
 }

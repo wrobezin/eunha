@@ -83,6 +83,11 @@ public class RuleService {
         }
         List<PushContact> pushContacts = Optional.ofNullable(vo.getPushContacts())
                 .orElse(Collections.emptyList());
+        pushContacts.forEach(contact -> {
+            if (null == contact.getParams()) {
+                contact.setParams(Collections.emptyMap());
+            }
+        });
         return CustomizedRule.builder()
                 .id(vo.getId())
                 .name(vo.getName())

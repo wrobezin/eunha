@@ -30,7 +30,7 @@ public class CrawlTask {
     }
 
     //    @Scheduled(cron = "0 0 0/3 * * ?")
-//    @Scheduled(cron = "0 30 22 * * ?")
+//    @Scheduled(cron = "0 0 0 * * ?")
     @Async
     public void run() {
         List<CustomizedRule> rules = ruleService.findAll();

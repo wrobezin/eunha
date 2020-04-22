@@ -15,15 +15,13 @@ import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRep
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.Response;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 网页爬虫类，抓取HTML内容
@@ -43,12 +41,14 @@ public class PageCrawler implements Crawler {
     private final CompatibilityScoreMongoRepository compatibilityRepository;
     private final GeneralHtmlParser parser;
     private final PageOpertor pageOpertor;
+    private final HttpClient httpClient;
 
-    public PageCrawler(Estimater estimater, CompatibilityScoreMongoRepository compatibilityRepository, GeneralHtmlParser parser, PageOpertor pageOpertor) {
+    public PageCrawler(Estimater estimater, CompatibilityScoreMongoRepository compatibilityRepository, GeneralHtmlParser parser, PageOpertor pageOpertor, HttpClient httpClient) {
         this.estimater = estimater;
         this.compatibilityRepository = compatibilityRepository;
         this.parser = parser;
         this.pageOpertor = pageOpertor;
+        this.httpClient = httpClient;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class PageCrawler implements Crawler {
 
     private DownloadResult downloadPage(HyperLink link) throws IOException {
         UrlInfo urlInfo = HttpUrlUtils.parseUrl(link.getUrl());
-        Response response = get(link.getUrl());
+        Response response = httpClient.get(link.getUrl());
         return new DownloadResult(urlInfo, response);
     }
 
@@ -128,35 +128,5 @@ public class PageCrawler implements Crawler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    // ------------------------------------------网络相关------------------------------------------
-
-    private final static OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .build();
-
-    protected final Response get(String url) throws IOException {
-        return HTTP_CLIENT.newCall(new Request.Builder()
-                .url(url)
-                .get()
-                .build()).execute();
-    }
-
-    protected final Response post(String url, Map<String, String> formParam) throws IOException {
-        FormBody.Builder formBuilder = new FormBody.Builder();
-        formParam.forEach(formBuilder::add);
-        return HTTP_CLIENT.newCall(new Request.Builder()
-                .url(url)
-                .post(formBuilder.build())
-                .build()).execute();
-    }
-
-    protected final Response postJson(String url, String json) throws IOException {
-        return HTTP_CLIENT.newCall(new Request.Builder()
-                .url(url)
-                .post(RequestBody.create(json, MediaType.parse("application/json; charset=utf-8")))
-                .build()).execute();
     }
 }

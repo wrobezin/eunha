@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 /**
  * @author yuan
  * @version 1.0
@@ -18,4 +20,5 @@ import lombok.NoArgsConstructor;
 public class PushContact {
     private PushContactTypeEnum type;
     private String value;
+    private Map<String, String> params;
 }
