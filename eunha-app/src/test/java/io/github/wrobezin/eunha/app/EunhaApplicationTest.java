@@ -1,5 +1,6 @@
 package io.github.wrobezin.eunha.app;
 
+import io.github.wrobezin.eunha.app.service.MessageService;
 import io.github.wrobezin.eunha.app.service.PageService;
 import io.github.wrobezin.eunha.app.service.RuleService;
 import io.github.wrobezin.eunha.crawler.Estimater;
@@ -7,6 +8,7 @@ import io.github.wrobezin.eunha.crawler.PageCrawler;
 import io.github.wrobezin.eunha.crawler.PageOpertor;
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
 import io.github.wrobezin.eunha.data.entity.document.Page;
+import io.github.wrobezin.eunha.data.entity.message.Message;
 import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import io.github.wrobezin.eunha.data.entity.rule.InterestRule;
 import io.github.wrobezin.eunha.data.entity.rule.SingleInterestRuleItem;
@@ -62,6 +64,9 @@ class EunhaApplicationTest {
 
     @Autowired
     private CustomizedRuleMongoRepository ruleRepository;
+
+    @Autowired
+    private MessageService messageService;
 
     @Test
     void testCrawl() {
@@ -200,7 +205,7 @@ class EunhaApplicationTest {
     }
 
     @Test
-    void testMail() {
-        mailService.sendMail("liangsiyuan@whutosa.com", "test", "测试<br><hr><ur><li>1</li><li>2</li><li>3</li></ur>");
+    void testMessage() {
+        messageService.addNewMessage(Message.builder().title("test3").content("TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST").build());
     }
 }
