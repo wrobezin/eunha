@@ -32,7 +32,7 @@ import java.util.Arrays;
  * @version 1.0
  * @date 2020/3/31 23:02
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 class EunhaApplicationTest {
     @Autowired

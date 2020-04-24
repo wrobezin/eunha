@@ -4,7 +4,7 @@ import io.github.wrobezin.eunha.data.entity.message.Message;
 import io.github.wrobezin.eunha.data.repository.mongo.MessageMongoRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -42,9 +42,7 @@ public class MessageService {
 
     public Message addNewMessage(Message message) {
         message.setRead(false);
-        if (null == message.getParams()) {
-            message.setParams(Collections.emptyMap());
-        }
+        message.setTime(LocalDateTime.now());
         return messageRepository.save(message);
     }
 
