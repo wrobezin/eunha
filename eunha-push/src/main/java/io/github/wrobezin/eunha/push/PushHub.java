@@ -2,10 +2,13 @@ package io.github.wrobezin.eunha.push;
 
 import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
 import io.github.wrobezin.eunha.data.entity.document.HyperLink;
+import io.github.wrobezin.eunha.data.entity.message.Message;
 import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import io.github.wrobezin.eunha.data.enums.PushContactTypeEnum;
-import io.github.wrobezin.eunha.push.mail.DingTalkService;
+import io.github.wrobezin.eunha.push.dingtalk.DingTalkService;
 import io.github.wrobezin.eunha.push.mail.MailService;
+import io.github.wrobezin.eunha.push.websocket.MessageService;
+import io.github.wrobezin.eunha.push.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +25,14 @@ import java.util.List;
 public class PushHub {
     private final MailService mailService;
     private final DingTalkService dingTalkService;
+    private final MessageService messageService;
 
     private static final int LIST_MAX_LENGTH = 10;
 
-    public PushHub(MailService mailService, DingTalkService dingTalkService) {
+    public PushHub(MailService mailService, DingTalkService dingTalkService, MessageService messageService) {
         this.mailService = mailService;
         this.dingTalkService = dingTalkService;
+        this.messageService = messageService;
     }
 
     private void addHtmlLinkList(String title, List<HyperLink> pages, StringBuilder html) {
@@ -62,7 +67,7 @@ public class PushHub {
             md.append("### ").append(title).append("\n");
             for (int i = 0; i < pages.size(); i++) {
                 if (i > LIST_MAX_LENGTH) {
-                    md.append("+ 更多请前往系统查看");
+                    md.append("+ 更多请前往系统查看\n");
                     break;
                 }
                 md.append("+ [")
@@ -82,6 +87,13 @@ public class PushHub {
         addMarkdownLinkList("新增页面", newPage, md);
         addMarkdownLinkList("更新页面", updatedPage, md);
         return md.toString();
+    }
+
+    private Message generateWebMessage(List<HyperLink> newPage, List<HyperLink> updatedPage, String ruleName) {
+        return Message.builder()
+                .title("规则【" + ruleName + "】有新抓取结果")
+                .content("共获取新增页面" + newPage.size() + "个及更新页面" + updatedPage + "个，详情请到规则管理模块查看。")
+                .build();
     }
 
     public void push(List<CrawlResult> results, CustomizedRule rule) {
@@ -109,6 +121,7 @@ public class PushHub {
                 "\"text\":\"" + markdonw + "\n\"" +
                 "    }\n" +
                 "}";
+        Message webMessage = generateWebMessage(newPage, updatedPage, rule.getName());
         rule.getPushContacts().forEach(contact -> {
             if (PushContactTypeEnum.EMAIL.equals(contact.getType())) {
                 try {
@@ -119,6 +132,8 @@ public class PushHub {
             } else if (PushContactTypeEnum.DING_TALK.equals(contact.getType())) {
                 dingTalkService.sendMarkdownMessage(contact, dingTalkMessage);
             }
+            messageService.addNewMessage(webMessage);
+            WebSocketServer.sendToAll("NEW_MESSAGE_PUSH");
         });
     }
 }

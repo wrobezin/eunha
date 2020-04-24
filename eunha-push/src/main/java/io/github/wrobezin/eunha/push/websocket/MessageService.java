@@ -1,4 +1,4 @@
-package io.github.wrobezin.eunha.app.service;
+package io.github.wrobezin.eunha.push.websocket;
 
 import io.github.wrobezin.eunha.data.entity.message.Message;
 import io.github.wrobezin.eunha.data.repository.mongo.MessageMongoRepository;

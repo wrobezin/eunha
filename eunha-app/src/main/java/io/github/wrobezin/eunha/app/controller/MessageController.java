@@ -1,7 +1,7 @@
 package io.github.wrobezin.eunha.app.controller;
 
-import io.github.wrobezin.eunha.app.service.MessageService;
 import io.github.wrobezin.eunha.data.entity.message.Message;
+import io.github.wrobezin.eunha.push.websocket.MessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 

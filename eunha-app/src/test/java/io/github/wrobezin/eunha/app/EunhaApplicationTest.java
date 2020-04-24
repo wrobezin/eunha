@@ -1,6 +1,5 @@
 package io.github.wrobezin.eunha.app;
 
-import io.github.wrobezin.eunha.app.service.MessageService;
 import io.github.wrobezin.eunha.app.service.PageService;
 import io.github.wrobezin.eunha.app.service.RuleService;
 import io.github.wrobezin.eunha.crawler.Estimater;
@@ -17,6 +16,7 @@ import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchR
 import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.CustomizedRuleMongoRepository;
 import io.github.wrobezin.eunha.push.mail.MailService;
+import io.github.wrobezin.eunha.push.websocket.MessageService;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

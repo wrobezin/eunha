@@ -1,4 +1,4 @@
-package io.github.wrobezin.eunha.push.mail;
+package io.github.wrobezin.eunha.push.dingtalk;
 
 import io.github.wrobezin.eunha.crawler.HttpClient;
 import io.github.wrobezin.eunha.data.entity.rule.PushContact;
@@ -28,7 +28,6 @@ import java.security.Security;
 public class DingTalkService {
     private final HttpClient httpClient;
     private static final String URL_PREFIX = "https://oapi.dingtalk.com/robot/send";
-
 
     public DingTalkService(HttpClient httpClient) {
         this.httpClient = httpClient;
