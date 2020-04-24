@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * 抓取规则
  *
@@ -19,6 +21,9 @@ import lombok.NoArgsConstructor;
 public class CrawlRule {
     /** 种子URL */
     private String seedUrl;
+
+    /** 要获取的xpath，截取后按顺序拼接在一起；为空时取body */
+    private List<String> xpath;
 
     /** 是否扩展到其它页面 */
     private Boolean expandable;

@@ -76,7 +76,7 @@ public class PageCrawler implements Crawler {
                 DownloadResult downloadResult = downloadPage(linkToDownload.getLink());
                 visited.add(urlToDonwload);
                 // 调用解析器解析页面
-                ParseResult parseResult = parser.parse(downloadResult);
+                ParseResult parseResult = parser.parse(downloadResult, crawlRule);
                 // 处理解析结果并将最终爬取结果添加到爬取结果列表
                 CrawlResult crawlResult = handleParseResult(parseResult);
                 crawlResults.add(crawlResult);

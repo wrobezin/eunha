@@ -15,6 +15,7 @@ import io.github.wrobezin.eunha.data.enums.RuleItemJudgeTypeEnum;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.CustomizedRuleMongoRepository;
+import io.github.wrobezin.eunha.data.repository.mongo.PageMongoRepository;
 import io.github.wrobezin.eunha.push.mail.MailService;
 import io.github.wrobezin.eunha.push.websocket.MessageService;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
@@ -42,7 +43,10 @@ class EunhaApplicationTest {
     private RuleService ruleService;
 
     @Autowired
-    private PageElasticsearchRepository pageRepository;
+    private PageElasticsearchRepository pageEsRepository;
+
+    @Autowired
+    private PageMongoRepository pageMongoRepository;
 
     @Autowired
     private PageOpertor pageOpertor;
@@ -52,9 +56,6 @@ class EunhaApplicationTest {
 
     @Autowired
     private CompatibilityScoreMongoRepository compatibilityScoreRepository;
-
-    @Autowired
-    private PageElasticsearchRepository pageEsRepository;
 
     @Autowired
     private PageService pageService;
@@ -206,6 +207,6 @@ class EunhaApplicationTest {
 
     @Test
     void testMessage() {
-        messageService.addNewMessage(Message.builder().title("test3").content("TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST").build());
+        messageService.addNewMessage(Message.builder().title("规则【学校官网疫情通告】有新抓取结果").content("共获得新增页面2个及更新页面1个，详情请前往规则管理模块查看。").build());
     }
 }

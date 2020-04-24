@@ -7,6 +7,7 @@ import io.github.wrobezin.eunha.data.entity.rule.CustomizedRule;
 import io.github.wrobezin.eunha.push.PushHub;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class CrawlTask {
     }
 
     //    @Scheduled(cron = "0 0 0/3 * * ?")
-//    @Scheduled(cron = "0 55 15 * * ?")
+    @Scheduled(cron = "30 8 19 * * ?")
     @Async
     public void run() {
         List<CustomizedRule> rules = ruleService.findAll();
