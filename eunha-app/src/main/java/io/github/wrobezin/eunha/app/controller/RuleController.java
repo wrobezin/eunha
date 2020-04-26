@@ -5,6 +5,7 @@ import io.github.wrobezin.eunha.app.vo.CustomizedRuleVO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author yuan
@@ -26,17 +27,22 @@ public class RuleController {
     }
 
     @GetMapping
-    public List<CustomizedRuleVO> queryAllRule() {
-        return ruleService.queryAllVo();
+    public List<CustomizedRuleVO> queryAllRule(String name, Integer pageIndex, Integer pageSize) {
+        return ruleService.queryVo(Optional.ofNullable(name).orElse(""), pageIndex, pageSize);
     }
 
-    @GetMapping("/{id}")
-    public List<CustomizedRuleVO> getById(@PathVariable String id) {
-        return ruleService.queryAllVo();
+    @GetMapping("/count")
+    public Integer countAll(String name) {
+        return ruleService.countAll(Optional.ofNullable(name).orElse(""));
     }
 
     @DeleteMapping("/{id}")
     public boolean deleteRule(@PathVariable String id) {
         return ruleService.remove(id);
+    }
+
+    @DeleteMapping("/")
+    public Integer deleteRule(@RequestBody List<String> idList) {
+        return ruleService.remove(idList);
     }
 }

@@ -39,4 +39,11 @@ public interface CompatibilityScoreMongoRepository extends MongoRepository<Compa
      * @return 总数
      */
     Long countByRuleIdAndValueGreaterThanEqual(String ruleId, Double value);
+
+    /**
+     * 根据URL删除评分
+     *
+     * @param url URL
+     */
+    void deleteByUrl(String url);
 }

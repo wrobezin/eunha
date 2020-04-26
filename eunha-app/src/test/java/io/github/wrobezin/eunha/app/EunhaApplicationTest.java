@@ -69,11 +69,13 @@ class EunhaApplicationTest {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private CompatibilityScoreMongoRepository scoreMongoRepository;
+
     @Test
     void testCrawl() {
-//        CustomizedRule customizedRule = ruleService.findAll().get(0);
-//        customizedRule.getCrawlRule().setMaxExpandDepth(1);
-        CustomizedRule customizedRule = ruleRepository.findByName("煎蛋首页");
+        CustomizedRule customizedRule = ruleService.findRules().get(0);
+        customizedRule.getCrawlRule().setMaxExpandDepth(1);
         crawler.crawl(customizedRule);
     }
 
@@ -208,5 +210,12 @@ class EunhaApplicationTest {
     @Test
     void testMessage() {
         messageService.addNewMessage(Message.builder().title("规则【学校官网疫情通告】有新抓取结果").content("共获得新增页面2个及更新页面1个，详情请前往规则管理模块查看。").build());
+    }
+
+    @Test
+    void temp() {
+        ruleRepository.findByNameLike("", PageRequest.of(0, 100))
+                .toList()
+                .forEach(System.out::println);
     }
 }

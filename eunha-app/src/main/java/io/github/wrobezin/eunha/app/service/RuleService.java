@@ -4,6 +4,7 @@ import io.github.wrobezin.eunha.app.vo.CustomizedRuleVO;
 import io.github.wrobezin.eunha.data.entity.rule.*;
 import io.github.wrobezin.eunha.data.repository.mongo.CustomizedRuleMongoRepository;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -107,17 +108,26 @@ public class RuleService {
                 .orElse(Boolean.FALSE);
     }
 
-    public List<CustomizedRule> findAll() {
+    public Integer countAll(String name) {
+        return repository.countByNameLike(name);
+    }
+
+    public List<CustomizedRule> findRules() {
         return repository.findAll();
     }
 
-    public List<CustomizedRuleVO> queryAllVo() {
-        return findAll().stream()
+    public List<CustomizedRule> findRules(String name, int pageIndex, int pageSize) {
+        return repository.findByNameLike(name, PageRequest.of(pageIndex, pageSize)).toList();
+    }
+
+    public List<CustomizedRuleVO> queryVo(String name, int pageIndex, int pageSize) {
+        return findRules(name, pageIndex, pageSize)
+                .stream()
                 .map(this::dbEntityTovo)
                 .collect(Collectors.toList());
     }
 
-    public CustomizedRuleVO queryById(String id) {
+    public CustomizedRuleVO queryVoById(String id) {
         return repository.findById(id)
                 .map(this::dbEntityTovo)
                 .orElse(null);
@@ -129,5 +139,15 @@ public class RuleService {
             repository.deleteById(id);
         }
         return exists;
+    }
+
+    public int remove(List<String> idList) {
+        List<CustomizedRule> rules = idList.stream()
+                .map(repository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        rules.forEach(repository::delete);
+        return rules.size();
     }
 }

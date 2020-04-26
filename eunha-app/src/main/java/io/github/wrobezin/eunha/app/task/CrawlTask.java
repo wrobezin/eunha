@@ -34,7 +34,7 @@ public class CrawlTask {
     @Scheduled(cron = "30 8 19 * * ?")
     @Async
     public void run() {
-        List<CustomizedRule> rules = ruleService.findAll();
+        List<CustomizedRule> rules = ruleService.findRules();
         log.info("从数据库中获取{}条规则", rules.size());
         rules.forEach(rule -> {
             log.info("开始抓取规则{}-{}", rule.getName(), rule.getId());

@@ -44,4 +44,19 @@ public interface PageMongoRepository extends MongoRepository<Page, String> {
      * @return 指定页面
      */
     Page findByUrlAndVersion(String url, Integer version);
+
+    /**
+     * 根据URL删除页面
+     *
+     * @param url URL
+     */
+    void deleteByUrl(String url);
+
+    /**
+     * 根据标题获取页面
+     *
+     * @param title 标题
+     * @return 页面
+     */
+    List<Page> findAllByTitle(String title);
 }

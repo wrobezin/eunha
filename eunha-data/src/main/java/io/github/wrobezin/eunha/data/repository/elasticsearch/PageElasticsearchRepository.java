@@ -16,4 +16,11 @@ public interface PageElasticsearchRepository extends ElasticsearchRepository<Pag
      * @return 页面列表
      */
     Page findByUrl(String url);
+
+    /**
+     * 根据URL删除页面
+     *
+     * @param url URL
+     */
+    void deleteByUrl(String url);
 }

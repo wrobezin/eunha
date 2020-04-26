@@ -4,6 +4,7 @@ import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
 import io.github.wrobezin.eunha.crawler.entity.ParseResult;
 import io.github.wrobezin.eunha.data.entity.document.Page;
 import io.github.wrobezin.eunha.data.repository.elasticsearch.PageElasticsearchRepository;
+import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
 import io.github.wrobezin.eunha.data.repository.mongo.PageMongoRepository;
 import io.github.wrobezin.eunha.data.utils.EntityHashUtils;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
@@ -22,10 +23,12 @@ import static java.util.Optional.ofNullable;
 public class PageOpertor {
     private final PageElasticsearchRepository pageEsRepository;
     private final PageMongoRepository pageMongoRepository;
+    private final CompatibilityScoreMongoRepository scoreMongoRepository;
 
-    public PageOpertor(PageElasticsearchRepository pageEsRepository, PageMongoRepository pageMongoRepository) {
+    public PageOpertor(PageElasticsearchRepository pageEsRepository, PageMongoRepository pageMongoRepository, CompatibilityScoreMongoRepository scoreMongoRepository) {
         this.pageEsRepository = pageEsRepository;
         this.pageMongoRepository = pageMongoRepository;
+        this.scoreMongoRepository = scoreMongoRepository;
     }
 
     public CrawlResult savePageData(ParseResult parseResult) {
@@ -67,5 +70,11 @@ public class PageOpertor {
                 .finishTime(LocalDateTime.now())
                 .pageInDb(page)
                 .build();
+    }
+
+    public void removePageData(String url) {
+        pageEsRepository.deleteByUrl(url);
+        pageMongoRepository.deleteByUrl(url);
+        scoreMongoRepository.deleteByUrl(url);
     }
 }
