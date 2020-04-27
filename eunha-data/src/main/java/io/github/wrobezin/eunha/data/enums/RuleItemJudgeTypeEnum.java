@@ -32,6 +32,9 @@ public enum RuleItemJudgeTypeEnum {
     /** 页面长度小于或等于某个值 */
     SHORTER_THAN(8, "短于");
 
+    // TODO URL正则
+    // TODO 内容正则
+
     private Integer type;
     private String description;
 }

@@ -22,8 +22,11 @@ public class CrawlRule {
     /** 种子URL */
     private String seedUrl;
 
+    /** 标题xpath */
+    private String titleXpath;
+
     /** 要获取的xpath，截取后按顺序拼接在一起；为空时取body */
-    private List<String> xpath;
+    private List<String> bodyXpath;
 
     /** 是否扩展到其它页面 */
     private Boolean expandable;

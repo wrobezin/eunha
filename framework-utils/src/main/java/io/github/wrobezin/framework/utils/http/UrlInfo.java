@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +41,10 @@ public class UrlInfo {
         return getProtocal() + "://" + getHost() + ":" + getPort() + getPath();
     }
 
+    public String getBaseUrlWithoutProtocal() {
+        return getHost() + ":" + getPort() + getPath();
+    }
+
     public String getUrlWithQuery() {
         String baseUrl = getBaseUrl();
         String queryString = getQueryString();
@@ -47,6 +52,10 @@ public class UrlInfo {
             baseUrl += "?" + queryString;
         }
         return baseUrl;
+    }
+
+    public String getHostUrl() {
+        return this.protocal + "://" + this.host + ":" + this.port + "/";
     }
 
     public static final UrlInfo BLANK = UrlInfo.builder()
@@ -61,5 +70,24 @@ public class UrlInfo {
 
     public boolean isHttpUrl() {
         return this.getProtocal().startsWith("http");
+    }
+
+    public UrlInfo upperPath() {
+        String[] layouts = this.path.endsWith("/")
+                ? this.path.substring(0, this.path.length() - 1).split("/")
+                : this.path.split("/");
+        StringBuilder path = new StringBuilder();
+        for (int i = 0; i < layouts.length - 1; i++) {
+            path.append("/").append(layouts[i]);
+        }
+        return UrlInfo.builder()
+                .protocal(this.protocal)
+                .host(this.host)
+                .port(this.port)
+                .path(path.toString())
+                .queryString("")
+                .queryMap(Collections.emptyMap())
+                .fragment("")
+                .build();
     }
 }

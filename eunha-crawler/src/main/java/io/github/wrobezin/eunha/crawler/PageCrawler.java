@@ -98,7 +98,7 @@ public class PageCrawler implements Crawler {
                             });
                 }
                 sleep();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error("下载{}出错：{}", linkToDownload, e);
             }
         }

@@ -4,8 +4,6 @@ import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import org.apache.commons.lang.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.util.Collection;
@@ -21,16 +19,44 @@ import java.util.stream.Stream;
  * date: 2020/1/21
  */
 public final class HyperLinkUtils {
-    private static final String RELATIVE_PATH_FLAG = "/";
+    private static final String ABSOLUTE_PATH_PREFIX = "//";
+    private static final String ROOT_PATH_PREFIX = "/";
+    private static final String SMAE_LAYOUT_PATH_PREFIX = "./";
+    private static final String UPPER_LAYOUT_PATH_PREFIX = "../";
+    private static final String INDEX_HTML_PATTERN = "/index(_\\d+)?.html?";
 
-    public static List<HyperLink> getAllLinks(Element element, String protocal, String host) {
-        return getLinksSatisfy(element, url -> true, url -> {
-            // 把相对路径转换成绝对路径
-            if (url.startsWith(RELATIVE_PATH_FLAG)) {
-                return protocal + "://" + host + url;
+    private static String cleanDoubleSlash(String url) {
+        while (url.contains("//")) {
+            url = url.replace("//", "/");
+        }
+        return url;
+    }
+
+    public static String transformToAbsoluteUrl(String url, UrlInfo parentUrl) {
+        if (url.startsWith(ABSOLUTE_PATH_PREFIX)) {
+            return parentUrl.getProtocal() + ":" + url;
+        } else if (url.startsWith(ROOT_PATH_PREFIX)) {
+            return parentUrl.getHostUrl() + url.substring(1);
+        } else if (url.startsWith(SMAE_LAYOUT_PATH_PREFIX)) {
+            url = parentUrl.getBaseUrlWithoutProtocal().replaceAll(INDEX_HTML_PATTERN, "") + "/" + url.substring(1);
+            return parentUrl.getProtocal() + "://" + cleanDoubleSlash(url);
+        } else if (url.startsWith(UPPER_LAYOUT_PATH_PREFIX)) {
+            while (url.startsWith(UPPER_LAYOUT_PATH_PREFIX)) {
+                parentUrl = parentUrl.upperPath();
+                url = url.substring(3);
             }
-            return url;
-        });
+            return parentUrl.getProtocal() + "://" + cleanDoubleSlash(parentUrl.getBaseUrlWithoutProtocal() + "/" + url);
+        } else if (!url.startsWith("http")) {
+            String baseUrl = parentUrl.getBaseUrl();
+            return baseUrl.endsWith("/")
+                    ? baseUrl + url
+                    : baseUrl + "/" + url;
+        }
+        return url;
+    }
+
+    public static List<HyperLink> getAllLinks(Element element, UrlInfo parentUrl) {
+        return getLinksSatisfy(element, url -> true, url -> transformToAbsoluteUrl(url, parentUrl));
     }
 
     public static List<HyperLink> getAllAbsoluteHttpLinks(Element element) {
@@ -69,15 +95,12 @@ public final class HyperLinkUtils {
     }
 
     public static void main(String[] args) {
-        String html = "<div class=\"cat-excerpt clearfloat subfeature\">\n" +
-                "\t\t\t\t\t<a href=\"http://jiaren.org/2017/06/15/zaoan-1045/\" rel=\"bookmark\"\n" +
-                "\t\t\t\t\t\ttitle=\"Permanent Link to 早安心语：远离消耗你的人，也不去消耗别人\"\n" +
-                "\t\t\t\t\t\ttarget=\"_blank\"><img width=\"70\" height=\"70\" src=\"http://pic.jiaren.org/wp-pic/2017/06/c21e5ec58cd27287e8eb92289772fb44906feabbcfcf8-Mts40z_fw658-70x70.jpeg\" class=\"attachment-archive-small\" alt=\"c21e5ec58cd27287e8eb92289772fb44906feabbcfcf8-Mts40z_fw658\" /></a>\n" +
-                "\t\t\t\t\t\t<h4><a href=\"http://jiaren.org/2017/06/15/zaoan-1045/\" rel=\"bookmark\"\n" +
-                "\t\t\t\t\t\t\t\ttitle=\"早安心语：远离消耗你的人，也不去消耗别人\" target=\"_blank\">早安心语：远离消耗你的人，也不去消耗别人</a></h4>\n" +
-                "\t\t\t\t\t\t<p>早安心语：你并不内向，只是不想搭理在你心中不重要的人。更多美文请关注佳人官方微信号：佳人（ID：jiarenorg） ， [&hellip;]</p>\n" +
-                "\t\t\t\t</div>";
-        Document parse = Jsoup.parse(html);
-        parse.getElementsByTag("a").forEach(System.out::println);
+        UrlInfo url1 = HttpUrlUtils.parseUrl("http://www.whut.edu.cn/xxgk/xyfg/mqdy/");
+        System.out.println(transformToAbsoluteUrl("../nhxqny/", url1));
+        System.out.println(transformToAbsoluteUrl("../../nhxqny/", url1));
+        System.out.println(transformToAbsoluteUrl("./nhxqny/", url1));
+        System.out.println(transformToAbsoluteUrl("/nhxqny/", url1));
+        System.out.println(transformToAbsoluteUrl("nhxqny/", url1));
+        System.out.println(transformToAbsoluteUrl("//nhxqny.com/fuck", url1));
     }
 }

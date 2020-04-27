@@ -43,9 +43,9 @@ public class PushHub {
                     html.append("<li>更多请前往系统查看</li>");
                     break;
                 }
-                html.append("<li><a herf=\"")
+                html.append("<li><a href=\"")
                         .append(pages.get(i).getUrl())
-                        .append("\">")
+                        .append("\" target=\"_blank\">")
                         .append(pages.get(i).getAnchorText())
                         .append("</a></li>");
             }

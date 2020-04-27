@@ -11,7 +11,6 @@ import okhttp3.Response;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 import org.seimicrawler.xpath.JXDocument;
@@ -35,6 +34,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GeneralHtmlParser {
     private static final Cleaner HTML_CLEANER = new Cleaner(Whitelist.relaxed());
+    private static final String XPATH_ROOT_HTML_PATTERN = "^/html";
+
+    private boolean isTextType(String type) {
+        return type.toLowerCase().contains("text") || type.toLowerCase().contains("json");
+    }
 
     /**
      * 获取请求载荷，默认取字符串形式
@@ -46,6 +50,7 @@ public class GeneralHtmlParser {
     private String getPayload(Response response) {
         return Optional.ofNullable(response)
                 .map(Response::body)
+                .filter(body -> isTextType(body.contentType().type()))
                 .map(responseBody -> {
                     try {
                         return responseBody.string();
@@ -56,44 +61,60 @@ public class GeneralHtmlParser {
                 }).orElse("");
     }
 
-    private void fillBaseUrl(Element element, UrlInfo urlInfo) {
-        if ("img".equals(element.tagName())) {
-            String src = element.attr("src");
-            if (StringUtils.isNotBlank(src) && src.startsWith("/")) {
-                src = urlInfo.getProtocal() + "://" + urlInfo.getHost() + src;
-                element.attr("src", src);
-            }
+    private void transformImgSrc(Document document, UrlInfo urlInfo) {
+        document.getElementsByTag("img")
+                .forEach(a -> a.attr("src", HyperLinkUtils.transformToAbsoluteUrl(a.attr("src"), urlInfo)));
+    }
+
+    private void transformLinkHref(Document document, UrlInfo urlInfo) {
+        document.getElementsByTag("a")
+                .forEach(a -> a.attr("href", HyperLinkUtils.transformToAbsoluteUrl(a.attr("href"), urlInfo)));
+    }
+
+    private String getContentByXpath(Document document, List<String> xpath, UrlInfo urlInfo) {
+        try {
+            return xpath.stream()
+                    .filter(StringUtils::isNotBlank)
+                    .map(JXDocument.create(document)::selN)
+                    .map(nodes -> nodes.stream()
+                            .map(JXNode::asElement)
+                            .map(Objects::toString)
+                            .collect(Collectors.joining())
+                    ).collect(Collectors.joining());
+        } catch (Exception e) {
+            return "";
         }
     }
 
-    private String getStringByXpath(Document document, List<String> xpath, UrlInfo urlInfo) {
-        return xpath.stream()
-                .map(JXDocument.create(document)::selN)
-                .map(nodes -> nodes.stream()
-                        .map(JXNode::asElement)
-                        .peek(element -> fillBaseUrl(element, urlInfo))
-                        .map(Objects::toString)
-                        .collect(Collectors.joining())
-                ).collect(Collectors.joining());
-    }
-
-    private String getStringByBody(Document document, UrlInfo urlInfo) {
+    private String getContentByBody(Document document, UrlInfo urlInfo) {
         return HTML_CLEANER.clean(document).body()
                 .children()
                 .stream()
-                .peek(element -> fillBaseUrl(element, urlInfo))
                 .map(Objects::toString)
                 .collect(Collectors.joining());
+    }
+
+    private String getTitleByXpah(Document document, String xpath) {
+        xpath = xpath.replaceAll(XPATH_ROOT_HTML_PATTERN, "/");
+        try {
+            return JXDocument.create(document).selNOne(xpath).asElement().text();
+        } catch (Exception e) {
+            return document.title();
+        }
     }
 
     public ParseResult parse(DownloadResult downloadResult, CrawlRule rule) {
         UrlInfo urlInfo = downloadResult.getUrlInfo();
         Document document = Jsoup.parse(getPayload(downloadResult.getResponse()));
-        String title = document.title();
-        String body = rule.getXpath().size() > 0
-                ? getStringByXpath(document, rule.getXpath(), urlInfo)
-                : getStringByBody(document, urlInfo);
-        List<HyperLink> links = HyperLinkUtils.getAllLinks(document, urlInfo.getProtocal(), urlInfo.getHost());
+        transformLinkHref(document, urlInfo);
+        transformImgSrc(document, urlInfo);
+        String title = StringUtils.isNotBlank(rule.getTitleXpath())
+                ? getTitleByXpah(document, rule.getTitleXpath())
+                : document.title();
+        String body = rule.getBodyXpath().size() > 0
+                ? getContentByXpath(document, rule.getBodyXpath(), urlInfo)
+                : getContentByBody(document, urlInfo);
+        List<HyperLink> links = HyperLinkUtils.getAllAbsoluteHttpLinks(document);
         return ParseResult.builder()
                 .urlInfo(urlInfo)
                 .title(title)

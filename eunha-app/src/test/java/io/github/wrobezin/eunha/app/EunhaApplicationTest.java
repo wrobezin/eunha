@@ -176,7 +176,7 @@ class EunhaApplicationTest {
         ParseResult parseResult = ParseResult.builder()
                 .urlInfo(HttpUrlUtils.parseUrl("http://fuck.you/sb/elasticsearch/"))
                 .links(new ArrayList<>())
-                .body("<div>链接：<a herf=\"fuck\">阳光普照<a>大地回春，春天到了，花开了</div>")
+                .body("<div>链接：<a href=\"fuck\">阳光普照<a>大地回春，春天到了，花开了</div>")
                 .title("春天的风光")
                 .build();
         System.out.println(pageOpertor.savePageData(parseResult));
@@ -214,8 +214,7 @@ class EunhaApplicationTest {
 
     @Test
     void temp() {
-        ruleRepository.findByNameLike("", PageRequest.of(0, 100))
-                .toList()
-                .forEach(System.out::println);
+//        CustomizedRule rule = ruleRepository.findById("8b78233c-92ba-4a2f-8ece-d19d317cdb2b").get();
+//        crawler.crawl(rule);
     }
 }

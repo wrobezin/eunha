@@ -46,4 +46,11 @@ public interface CompatibilityScoreMongoRepository extends MongoRepository<Compa
      * @param url URL
      */
     void deleteByUrl(String url);
+
+    /**
+     * 根据规则ID删除评分
+     *
+     * @param id 规则ID
+     */
+    void deleteByRuleId(String id);
 }

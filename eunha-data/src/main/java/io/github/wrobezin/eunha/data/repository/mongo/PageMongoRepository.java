@@ -59,4 +59,11 @@ public interface PageMongoRepository extends MongoRepository<Page, String> {
      * @return 页面
      */
     List<Page> findAllByTitle(String title);
+
+    /**
+     * 根据HOST删除页面
+     *
+     * @param host HOST
+     */
+    void deleteByHost(String host);
 }

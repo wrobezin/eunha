@@ -23,4 +23,11 @@ public interface PageElasticsearchRepository extends ElasticsearchRepository<Pag
      * @param url URL
      */
     void deleteByUrl(String url);
+
+    /**
+     * 根据HOST删除页面
+     *
+     * @param host HOST
+     */
+    void deleteByHost(String host);
 }
