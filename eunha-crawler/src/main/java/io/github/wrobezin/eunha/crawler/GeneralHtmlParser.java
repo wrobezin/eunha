@@ -8,6 +8,7 @@ import io.github.wrobezin.eunha.data.entity.rule.CrawlRule;
 import io.github.wrobezin.framework.utils.http.UrlInfo;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,7 +21,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +37,8 @@ import java.util.stream.Collectors;
 public class GeneralHtmlParser {
     private static final Cleaner HTML_CLEANER = new Cleaner(Whitelist.relaxed());
     private static final String XPATH_ROOT_HTML_PATTERN = "^/html";
+    private static final Pattern CHARSET_PATTERN = Pattern.compile("<meta.*?charset=\"?(.*?)\"");
+    private static final String DEFAULT_CHARSET = "UTF-8";
 
     private boolean isTextType(String type) {
         return type.toLowerCase().contains("text") || type.toLowerCase().contains("json");
@@ -42,23 +46,26 @@ public class GeneralHtmlParser {
 
     /**
      * 获取请求载荷，默认取字符串形式
-     * TODO 支持GBK等字符集
      *
      * @param response
      * @return
      */
     private String getPayload(Response response) {
-        return Optional.ofNullable(response)
-                .map(Response::body)
-                .filter(body -> isTextType(body.contentType().type()))
-                .map(responseBody -> {
-                    try {
-                        return responseBody.string();
-                    } catch (IOException e) {
-                        log.error("获取响应载荷字符串错误", e);
-                        return "";
-                    }
-                }).orElse("");
+        String result = "";
+        ResponseBody body = response.body();
+        if (isTextType(body.contentType().type())) {
+            try {
+                byte[] bytes = body.bytes();
+                String pageContext = new String(bytes);
+                Matcher matcher = CHARSET_PATTERN.matcher(pageContext);
+                String charset = matcher.find() ? matcher.group(1).toUpperCase() : DEFAULT_CHARSET;
+                result = new String(bytes, charset);
+            } catch (IOException e) {
+                log.error("获取请求体出错 {}", response.request().url(), e);
+            }
+        }
+        body.close();
+        return result;
     }
 
     private void transformImgSrc(Document document, UrlInfo urlInfo) {
