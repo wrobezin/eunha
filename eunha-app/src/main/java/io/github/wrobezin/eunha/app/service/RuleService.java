@@ -63,8 +63,6 @@ public class RuleService {
         vo.setId(rule.getId());
         vo.setCrawlRule(rule.getCrawlRule());
         vo.setName(rule.getName());
-        vo.setCreateTime(rule.getCreateTime());
-        vo.setUpdateTime(rule.getUpdateTime());
         vo.setInterestRule(rule.getInterestRule()
                 .getInterestRules()
                 .stream()
@@ -94,7 +92,7 @@ public class RuleService {
                 .name(vo.getName())
                 .crawlRule(vo.getCrawlRule())
                 .interestRule(new InterestRule(groups))
-                .createTime(Optional.ofNullable(vo.getCreateTime()).orElse(now))
+                .createTime(now)
                 .updateTime(now)
                 .pushContacts(pushContacts)
                 .build();
