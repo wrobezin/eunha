@@ -3,6 +3,7 @@ package io.github.wrobezin.eunha.data.entity.rule;
 import io.github.wrobezin.eunha.data.enums.RuleItemLogicTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
  * @date 2020/3/28 20:28
  */
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class InterestRuleItemGroup extends AbstractInterestRuleItem {
     private List<? extends AbstractInterestRuleItem> ruleItems;

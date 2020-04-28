@@ -214,7 +214,7 @@ class EunhaApplicationTest {
 
     @Test
     void temp() {
-//        CustomizedRule rule = ruleRepository.findById("8b78233c-92ba-4a2f-8ece-d19d317cdb2b").get();
-//        crawler.crawl(rule);
+        CustomizedRule rule = ruleRepository.findById("fc5e1e77-67ba-4646-8413-b1ce3c5129e7").get();
+        crawler.crawl(rule);
     }
 }
