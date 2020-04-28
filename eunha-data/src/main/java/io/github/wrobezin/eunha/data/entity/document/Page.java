@@ -50,9 +50,6 @@ public class Page {
     private List<HyperLink> hyperLinks;
 
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-//    @JsonSerialize(using = LocalDateTimeSerializer.class)
-//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updateTime;
 
     public static final Page BLANK = Page.builder()
