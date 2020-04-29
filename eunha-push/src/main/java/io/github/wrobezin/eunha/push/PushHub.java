@@ -1,5 +1,7 @@
 package io.github.wrobezin.eunha.push;
 
+import com.alibaba.fastjson.JSONObject;
+import io.github.wrobezin.eunha.crawler.HttpClient;
 import io.github.wrobezin.eunha.crawler.entity.CrawlResult;
 import io.github.wrobezin.eunha.data.entity.document.HyperLink;
 import io.github.wrobezin.eunha.data.entity.message.Message;
@@ -12,6 +14,7 @@ import io.github.wrobezin.eunha.push.websocket.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,13 +29,15 @@ public class PushHub {
     private final MailService mailService;
     private final DingTalkService dingTalkService;
     private final MessageService messageService;
+    private final HttpClient httpClient;
 
     private static final int LIST_MAX_LENGTH = 10;
 
-    public PushHub(MailService mailService, DingTalkService dingTalkService, MessageService messageService) {
+    public PushHub(MailService mailService, DingTalkService dingTalkService, MessageService messageService, HttpClient httpClient) {
         this.mailService = mailService;
         this.dingTalkService = dingTalkService;
         this.messageService = messageService;
+        this.httpClient = httpClient;
     }
 
     private void addHtmlLinkList(String title, List<HyperLink> pages, StringBuilder html) {
@@ -127,10 +132,16 @@ public class PushHub {
                 try {
                     mailService.sendMail(contact.getValue(), "【" + rule.getName() + "】有新抓取结果", html);
                 } catch (Exception e) {
-                    log.error("发送邮件出错", e);
+                    log.warn("发送邮件出错", e);
                 }
             } else if (PushContactTypeEnum.DING_TALK.equals(contact.getType())) {
                 dingTalkService.sendMarkdownMessage(contact, dingTalkMessage);
+            } else if (PushContactTypeEnum.WEB_HOOK.equals(contact.getType())) {
+                try {
+                    httpClient.postJson(contact.getValue(), JSONObject.toJSONString(results));
+                } catch (IOException e) {
+                    log.warn("WebHook推送出错", e);
+                }
             }
             messageService.addNewMessage(webMessage);
             WebSocketServer.sendToAll("NEW_MESSAGE_PUSH");
