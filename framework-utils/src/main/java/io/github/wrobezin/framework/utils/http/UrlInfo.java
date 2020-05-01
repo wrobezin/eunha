@@ -37,12 +37,18 @@ public class UrlInfo {
     @JSONField(ordinal = 7)
     private String fragment;
 
+    public String colonAndPort() {
+        return getPort() == 80
+                ? ""
+                : ":" + getPort();
+    }
+
     public String getBaseUrl() {
-        return getProtocal() + "://" + getHost() + ":" + getPort() + getPath();
+        return getProtocal() + "://" + getHost() + colonAndPort() + getPath();
     }
 
     public String getBaseUrlWithoutProtocal() {
-        return getHost() + ":" + getPort() + getPath();
+        return getHost() + colonAndPort() + getPath();
     }
 
     public String getUrlWithQuery() {
@@ -55,7 +61,7 @@ public class UrlInfo {
     }
 
     public String getHostUrl() {
-        return this.protocal + "://" + this.host + ":" + this.port + "/";
+        return this.protocal + "://" + this.host + colonAndPort() + "/";
     }
 
     public static final UrlInfo BLANK = UrlInfo.builder()

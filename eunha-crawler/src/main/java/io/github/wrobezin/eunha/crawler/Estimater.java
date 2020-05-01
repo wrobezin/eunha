@@ -8,7 +8,6 @@ import io.github.wrobezin.eunha.data.entity.rule.*;
 import io.github.wrobezin.eunha.data.enums.RuleItemLogicTypeEnum;
 import io.github.wrobezin.eunha.data.repository.mongo.CompatibilityScoreMongoRepository;
 import io.github.wrobezin.framework.utils.http.HttpUrlUtils;
-import io.github.wrobezin.framework.utils.http.UrlInfo;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -61,14 +60,6 @@ public class Estimater {
         return compatibilities.stream().mapToDouble(Double::doubleValue).average().orElse(FALSE);
     }
 
-    private String removeDefaultPort(String url) {
-        UrlInfo urlInfo = HttpUrlUtils.parseUrl(url);
-        return urlInfo.getProtocal()
-                + "://" + urlInfo.getHost()
-                + (urlInfo.getPort() == 80 ? "" : ":" + urlInfo.getPort())
-                + "/" + urlInfo.getPort();
-    }
-
     private double pageFit(Page page, SingleInterestRuleItem ruleItem) {
         switch (ruleItem.getJudgeType()) {
             case ALWAYS_TRUE:
@@ -90,7 +81,7 @@ public class Estimater {
             case SHORTER_THAN:
                 return page.getBody().length() <= Integer.parseInt(ruleItem.getValue()) ? TRUE : FALSE;
             case URL_REGEX:
-                return Pattern.compile(ruleItem.getValue()).matcher(removeDefaultPort(page.getUrl())).matches() ? TRUE : FALSE;
+                return Pattern.compile(ruleItem.getValue()).matcher(page.getUrl()).matches() ? TRUE : FALSE;
         }
         return FALSE;
     }
@@ -104,7 +95,7 @@ public class Estimater {
             case CONTENT_NOT_CONTAIN:
                 return !link.getAnchorText().contains(ruleItem.getValue()) ? TRUE : FALSE;
             case URL_REGEX:
-                return Pattern.compile(ruleItem.getValue()).matcher(removeDefaultPort(link.getUrl())).matches() ? TRUE : FALSE;
+                return Pattern.compile(ruleItem.getValue()).matcher(link.getUrl()).matches() ? TRUE : FALSE;
         }
         return FALSE;
     }
